@@ -1,0 +1,119 @@
+.chat {
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+  background-color: $surface-mixed-100;
+  border-radius: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &__messages {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    padding: 1rem;
+    gap: 1rem;
+
+    &::-webkit-scrollbar {
+      width: 0.8rem;
+
+      &-thumb {
+        background-color: $surface-mixed-200;
+        border-radius: 1rem;
+      }
+    }
+  }
+
+  &__input {
+    height: 6rem;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-direction: row;
+
+    &__mic {
+      height: 6rem;
+      width: 6rem;
+      background-color: $error-200;
+      border-radius: 1.8rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    &__text {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      gap: 1rem;
+
+      height: 100%;
+      width: calc(100% - 6rem);
+      background-color: $surface-mixed-200;
+      border-radius: 1.8rem;
+      padding: 1rem;
+      color: $text-100;
+      font-size: 1.2rem;
+    }
+
+    &__field {
+      height: 100%;
+      width: 100%;
+      background-color: $surface-mixed-200;
+      border-radius: 1.8rem;
+      padding: 1rem;
+      color: $text-100;
+      font-size: 1.2rem;
+      border: none;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    &__send {
+      height: 100%;
+      width: 6rem;
+      background-color: $primary-300;
+      border-radius: 1.8rem;
+      border: none;
+      cursor: pointer;
+    }
+  }
+}
+
+.message--user {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  &__text {
+    background-color: $primary-300;
+    padding: 1rem;
+    border-radius: 1.8rem 1.8rem 0.7rem 1.8rem;
+    color: $text-100;
+    font-size: 1.2rem;
+  }
+}
+
+.message--system {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  &__text {
+    background-color: $surface-mixed-300;
+    padding: 1rem;
+    border-radius: 1.8rem 1.8rem 1.8rem 0.7rem;
+    color: $text-100;
+    font-size: 1.2rem;
+  }
+}
