@@ -11,7 +11,7 @@ jobs:
       - name: Use Node.js LTS
         uses: actions/setup-node@v3
         with:
-          node-version: active
+          node-version: 20
           cache: "npm"
 
       - name: Install dependencies
