@@ -1,13 +1,15 @@
+import os
 import openai
 import dotenv
-import os
 
 dotenv.load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-class GPT_Wrapper:
-    def __init__(self, engine='gpt-3.5-turbo', system_prompt="The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly."):
+class GPTWrapper:
+    def __init__(self, engine='gpt-3.5-turbo',
+                 system_prompt="The following is a conversation with an AI assistant.\
+                   The assistant is helpful, creative, clever, and very friendly."):
         self.engine = engine
         self.system_prompt = system_prompt
         self.chat_history = []
