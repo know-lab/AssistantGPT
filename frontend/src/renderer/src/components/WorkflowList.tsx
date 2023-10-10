@@ -9,7 +9,7 @@ export default function WorkflowList(): React.ReactElement {
   }
 
   const handleNewWorkflowClick = (): void => {
-    setActiveTab('chat')
+    setActiveTab('create-workflow')
   }
 
   return (

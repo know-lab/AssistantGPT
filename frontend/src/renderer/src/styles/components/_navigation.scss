@@ -1,0 +1,17 @@
+.navigation {
+  position: relative;
+
+  &__item {
+    cursor: pointer;
+    border-radius: 1.8rem;
+    height: 3.6rem;
+    width: 3.6rem;
+    border: none;
+    background-color: $surface-200;
+    color: $text-400;
+
+    &:hover {
+      background-color: $surface-mixed-300;
+    }
+  }
+}
