@@ -4,10 +4,10 @@ import {
   TActiveTabContext,
   ActiveTab
 } from '@renderer/types/types'
-import { createContext, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
 export const ActiveWorkflowContext = createContext<TActiveWorkflowContext>(null)
-export const ActiveTabContext = createContext<TActiveTabContext>(null)
+export const ActiveTabContext = createContext<TActiveTabContext | null>(null)
 
 export default function ContextProvider({
   children
@@ -26,4 +26,12 @@ export default function ContextProvider({
       </ActiveWorkflowContext.Provider>
     </ActiveTabContext.Provider>
   )
+}
+
+export const useActiveTab = (): TActiveTabContext => {
+  const context = useContext(ActiveTabContext)
+  if (!context) {
+    throw new Error('useActiveTab must be used within a ContextProvider')
+  }
+  return context
 }

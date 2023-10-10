@@ -1,11 +1,10 @@
-import { useContext } from 'react'
 import Chat from './components/Chat'
 import WorkflowList from './components/WorkflowList'
 import './styles/main.scss'
-import { ActiveTabContext } from './components/ContextProvider'
+import { useActiveTab } from './components/ContextProvider'
 
 function App(): JSX.Element {
-  const [activeTab, setActiveTab] = useContext(ActiveTabContext)
+  const [activeTab, setActiveTab] = useActiveTab()
   return (
     <>
       <div className="header" />

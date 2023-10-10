@@ -11,4 +11,4 @@ export type TActiveWorkflowContext =
 
 export type ActiveTab = 'chat' | 'workflow' | 'create-workflow' | null
 
-export type TActiveTabContext = [ActiveTab, React.Dispatch<React.SetStateAction<ActiveTab>>] | null
+export type TActiveTabContext = [ActiveTab, (active: ActiveTab) => void]
