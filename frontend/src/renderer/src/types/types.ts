@@ -5,10 +5,8 @@ export interface Workflow {
   params?: unknown
 }
 
-export type TActiveWorkflowContext =
-  | [Workflow | null, React.Dispatch<React.SetStateAction<Workflow | null>>]
-  | null
+export type TActiveWorkflowContext = [Workflow | null, (workflow: Workflow | null) => void]
 
-export type ActiveTab = 'chat' | 'workflow' | 'create-workflow' | null
+export type ActiveTab = 'chat' | 'workflow' | 'create-workflow'
 
 export type TActiveTabContext = [ActiveTab, (active: ActiveTab) => void]
