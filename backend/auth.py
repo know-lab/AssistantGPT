@@ -1,6 +1,5 @@
 import os
 from datetime import datetime, timedelta
-from typing import Annotated
 
 import dotenv
 from fastapi import Depends, HTTPException, status
@@ -11,9 +10,6 @@ from passlib.context import CryptContext
 from models import TokenData, User, UserInDB
 
 dotenv.load_dotenv()
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -26,9 +22,9 @@ class AuthHandler:
         self.fake_users_db = fake_users_db
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
         self.oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-        self.SECRET_KEY = "mysecretkey"
-        self.ALGORITHM = "HS256"
-        self.ACCESS_TOKEN_EXPIRE_MINUTES = 30
+        self.secret_key = os.getenv("SECRET_KEY")
+        self.algorithm = os.getenv("ALGORITHM")
+        self.access_token_expire_minutes = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
     def verify_password(self, plain_password, hashed_password):
         return self.pwd_context.verify(plain_password, hashed_password)
@@ -41,12 +37,14 @@ class AuthHandler:
             user_dict = self.fake_users_db[username]
             return UserInDB(**user_dict)
 
+        return None
+
     def authenticate_user(self, username: str, password: str):
         user = self.get_user(username)
         if not user:
-            return False
+            return None
         if not self.verify_password(password, user.hashed_password):
-            return False
+            return None
         return user
 
     def create_access_token(self, data: dict, expires_delta: timedelta | None = None):
@@ -56,7 +54,7 @@ class AuthHandler:
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
+        encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
         return encoded_jwt
 
     async def get_current_user(self, token: str = Depends(oauth2_scheme)):
@@ -66,13 +64,13 @@ class AuthHandler:
             headers={"WWW-Authenticate": "Bearer"},
         )
         try:
-            payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
+            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
             username: str = payload.get("sub")
             if username is None:
                 raise credentials_exception
             token_data = TokenData(username=username)
-        except JWTError:
-            raise credentials_exception
+        except JWTError as exc:
+            raise credentials_exception from exc
         user = self.get_user(token_data.username)
         if user is None:
             raise credentials_exception
@@ -91,6 +89,8 @@ class AuthHandler:
                 detail="Incorrect username or password",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        access_token_expires = timedelta(minutes=self.ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = self.create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+        access_token_expires = timedelta(minutes=self.access_token_expire_minutes)
+        access_token = self.create_access_token(
+            data={"sub": user.username}, expires_delta=access_token_expires
+        )
         return {"access_token": access_token, "token_type": "bearer"}
