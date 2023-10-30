@@ -1,0 +1,61 @@
+.profile-badge {
+  position: relative;
+  width: 100%;
+  height: 6rem;
+  min-height: 6rem;
+  background-color: $surface-300;
+  border-radius: 1.8rem;
+  padding: 1rem;
+  border: none;
+  text-align: left;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  gap: 1rem;
+
+  &__image {
+    height: 4rem;
+    width: 4rem;
+    background-color: $primary-200;
+    border-radius: 2rem;
+  }
+
+  &__name {
+    color: $text-500;
+  }
+
+  &__logout {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 1rem;
+    background-color: $error-100;
+    border: none;
+    cursor: pointer;
+  }
+
+  &__login,
+  &__register {
+    width: 50%;
+    height: 100%;
+    border-radius: 1.8rem;
+    border: none;
+    cursor: pointer;
+
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: $text-900;
+  }
+
+  &__login {
+    background-color: $success-100;
+  }
+
+  &__register {
+    background-color: $primary-200;
+  }
+}
