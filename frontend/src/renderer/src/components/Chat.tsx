@@ -45,7 +45,7 @@ export default function Chat(): React.ReactElement {
         ))}
       </div>
       <div className="chat__input">
-        <VoiceInput setUrl={setVoiceMessageUrl}/>
+        <VoiceInput setUrl={setVoiceMessageUrl} />
         <div className="chat__input__text">
           <input
             className="chat__input__field"
