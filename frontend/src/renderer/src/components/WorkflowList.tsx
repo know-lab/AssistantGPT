@@ -1,7 +1,7 @@
 import { useActiveTab } from './ContextProvider'
 
 export default function WorkflowList(): React.ReactElement {
-  const list = ['wf1', 'wf2', 'wf3']
+  const list = ['wf1', 'wf2', 'wf3', 'wf1', 'wf2', 'wf3', 'wf1', 'wf2', 'wf3']
   const [activeTab, setActiveTab] = useActiveTab()
 
   const handleWorkflowClick = (workflowId: string): void => {
