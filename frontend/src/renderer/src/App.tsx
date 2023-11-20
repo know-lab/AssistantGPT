@@ -21,6 +21,7 @@ function App(): JSX.Element {
           </div>
         </div>
         {activeTab === 'chat' && <Chat />}
+        {activeTab === 'new-chat' && <Chat />}
         {activeTab === 'workflow' && <WorkflowDetails />}
         {activeTab === 'create-workflow' && <WorkflowDetails />}
       </main>
