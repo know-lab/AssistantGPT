@@ -1,0 +1,14 @@
+.voice-input {
+  height: 6rem;
+  width: 6rem;
+  background-color: $error-200;
+  //color: $text-900;
+  border-radius: 1.8rem;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

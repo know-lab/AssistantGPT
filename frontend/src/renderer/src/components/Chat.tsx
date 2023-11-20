@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import VoiceInput from './VoiceInput'
 
 interface Message {
   text: string
@@ -21,13 +22,20 @@ export default function Chat(): React.ReactElement {
     { text: 'I have to go now, bye!', user: true },
     { text: 'Bye!', user: false }
   ])
+  const [voiceMessageUrl, setVoiceMessageUrl] = useState<string>('')
 
-  const sendMessage = (): void => {
+  const sendTextMessage = (): void => {
     if (input.length > 0) {
       setMessages([...messages, { text: input, user: true }])
       setInput('')
     }
   }
+
+  useEffect(() => {
+    if (voiceMessageUrl.length > 0) {
+      setMessages([...messages, { text: voiceMessageUrl, user: true }])
+    }
+  }, [voiceMessageUrl])
 
   return (
     <section className="chat">
@@ -37,7 +45,7 @@ export default function Chat(): React.ReactElement {
         ))}
       </div>
       <div className="chat__input">
-        <button className="chat__input__mic"></button>
+        <VoiceInput setUrl={setVoiceMessageUrl} />
         <div className="chat__input__text">
           <input
             className="chat__input__field"
@@ -46,7 +54,7 @@ export default function Chat(): React.ReactElement {
             onChange={(e): void => setInput(e.target.value)}
             value={input}
           />
-          <button className="chat__input__send" onClick={sendMessage}></button>
+          <button className="chat__input__send" onClick={sendTextMessage}></button>
         </div>
       </div>
     </section>
