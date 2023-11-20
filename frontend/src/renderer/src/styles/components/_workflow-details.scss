@@ -6,5 +6,102 @@
   border-radius: 1.8rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 3rem;
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__title {
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: $text-400;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    &__subtitle {
+      font-size: 2rem;
+      font-weight: 500;
+      color: $text-400;
+    }
+
+    &__input {
+      height: 6rem;
+      width: 100%;
+      background-color: $surface-mixed-200;
+      border-radius: 1.8rem;
+      padding: 1rem;
+      color: $text-100;
+      font-size: 1.8rem;
+      border: none;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    &__script {
+      height: 12rem;
+      width: 100%;
+      background-color: $surface-100;
+      border-radius: 1.8rem;
+      padding: 1rem;
+      color: $text-100;
+      font-size: 1.8rem;
+      border: none;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+
+    &__button {
+      height: 4rem;
+      width: 10rem;
+      background-color: $primary-300;
+      border-radius: 1.8rem;
+      border: none;
+      cursor: pointer;
+      color: $text-100;
+      font-size: 1.8rem;
+      font-weight: 500;
+
+      &--save {
+        background-color: $primary-300;
+
+        &:disabled {
+          background-color: $surface-mixed-400;
+          color: $text-500;
+          cursor: not-allowed;
+        }
+      }
+
+      &--cancel {
+        background-color: $error-200;
+        color: $text-200;
+
+        &:disabled {
+          background-color: $surface-mixed-400;
+          color: $text-500;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
 }
