@@ -1,26 +1,53 @@
 import os
-import openai
+from openai import OpenAI
 import dotenv
 
 dotenv.load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 class GPTWrapper:
-    def __init__(self, engine='gpt-3.5-turbo',
-                 system_prompt="The following is a conversation with an AI assistant.\
-                   The assistant is helpful, creative, clever, and very friendly."):
+    def __init__(
+        self,
+        engine="gpt-3.5-turbo-1106",
+        system_prompt="The following is a conversation with an AI assistant.",
+    ):
         self.engine = engine
         self.system_prompt = system_prompt
         self.chat_history = []
+        self.tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_shell_command",
+                    "description": "Get the shell command to run",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "command": {
+                                "type": "string",
+                                "description": "The command to run",
+                            },
+                            "timeout": {
+                                "type": "integer",
+                                "description": "The timeout in seconds",
+                            },
+                        },
+                        "required": ["command"],
+                    },
+                },
+            }
+        ]
         self.append_system_prompt(system_prompt)
 
     def send_message(self, message):
         self.append_user_message(message)
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo", messages=self.chat_history)
-        self.append_assistant_message(completion.choices[0].message.content)
-        return completion.choices[0].message.content
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo-1106", messages=self.chat_history
+        )
+        self.append_assistant_message(response.choices[0].message.content)
+        return response.choices[0].message.content
 
     def get_chat_history(self):
         return self.chat_history
