@@ -4,12 +4,14 @@ import {
   TActiveTabContext,
   ActiveTab,
   User,
-  TUserContext
+  TUserContext,
+  TActiveChatIdContext
 } from '@renderer/types/types'
 import { createContext, useContext, useState } from 'react'
 
 const ActiveTabContext = createContext<TActiveTabContext | null>(null)
 const ActiveWorkflowContext = createContext<TActiveWorkflowContext | null>(null)
+const ActiveChatIdContext = createContext<TActiveChatIdContext | null>(null)
 const UserContext = createContext<TUserContext | null>(null)
 
 export default function ContextProvider({
@@ -19,6 +21,7 @@ export default function ContextProvider({
 }): React.ReactElement {
   const activeTabState = useState<ActiveTab>('chat')
   const activeWorkflowState = useState<Workflow | null>(null)
+  const activeChatIdState = useState<string | null>(null)
   const userState = useState<User | null>(null)
 
   console.log(activeTabState)
@@ -26,7 +29,9 @@ export default function ContextProvider({
   return (
     <ActiveTabContext.Provider value={activeTabState}>
       <ActiveWorkflowContext.Provider value={activeWorkflowState}>
-        <UserContext.Provider value={userState}>{children}</UserContext.Provider>
+        <ActiveChatIdContext.Provider value={activeChatIdState}>
+          <UserContext.Provider value={userState}>{children}</UserContext.Provider>
+        </ActiveChatIdContext.Provider>
       </ActiveWorkflowContext.Provider>
     </ActiveTabContext.Provider>
   )
@@ -48,10 +53,23 @@ export const useActiveWorkflow = (): TActiveWorkflowContext => {
   return context
 }
 
+export const useActiveChatId = (): TActiveChatIdContext => {
+  const context = useContext(ActiveChatIdContext)
+  if (!context) {
+    throw new Error('useActiveWorkflow must be used within a ContextProvider')
+  }
+  return context
+}
+
 export const UseUser = (): TUserContext => {
   const context = useContext(UserContext)
   if (!context) {
     throw new Error('useActiveWorkflow must be used within a ContextProvider')
   }
   return context
+}
+
+export const isAuthenticated = (): boolean => {
+  const [user] = UseUser()
+  return user !== null
 }
