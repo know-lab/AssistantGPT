@@ -1,6 +1,12 @@
 import subprocess
 import os
 
+COMMAND_WHITELIST = [
+    "mkdir",
+    "touch",
+    "ls",
+]
+
 
 class CommandExecutor:
     def __init__(self, workdir_override=None):
