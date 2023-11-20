@@ -40,15 +40,25 @@
     }
 
     &__title {
+      width: 20rem;
+      height: 1.4rem;
       font-size: 1.4rem;
       font-weight: 500;
       color: $text-100;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     &__desc {
+      width: 20rem;
+      height: 1.4rem;
       font-size: 1.2rem;
       font-weight: 400;
       color: $text-200;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }
