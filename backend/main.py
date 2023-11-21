@@ -1,10 +1,10 @@
 import json
-from typing import Annotated
 import uuid
+from typing import Annotated
 
-from auth import AuthHandler
 from fastapi import Depends, FastAPI
 from fastapi.responses import RedirectResponse
+from auth import AuthHandler
 from gpt_wrapper import GPTWrapper
 from models import Token, User
 from test_data import fake_users_db
@@ -13,14 +13,16 @@ auth = AuthHandler(fake_users_db=fake_users_db)
 app = FastAPI()
 gpt_wrapper = GPTWrapper()
 
-with open("endpoint-example-responses/fetch_chatlist.json", "r") as f:
+with open("endpoint-example-responses/fetch_chatlist.json", "r", encoding="utf-8") as f:
     fetch_chatlist_example_response = json.load(f)
 
-with open("endpoint-example-responses/fetch_messages.json", "r") as f:
+with open("endpoint-example-responses/fetch_messages.json", "r", encoding="utf-8") as f:
     fetch_messages_example_response = json.load(f)
 
 
-with open("endpoint-example-responses/fetch_workflows.json", "r") as f:
+with open(
+    "endpoint-example-responses/fetch_workflows.json", "r", encoding="utf-8"
+) as f:
     fetch_workflows_example_response = json.load(f)
 
 
@@ -45,6 +47,7 @@ async def get_current_user(
 
 @app.get("/chat/{chat_id}")
 def get_messages(chat_id: int):
+    print(chat_id)
     return {"messages": fetch_messages_example_response}
 
 
