@@ -11,7 +11,8 @@ class GPTWrapper:
     def __init__(
         self,
         engine="gpt-3.5-turbo-1106",
-        system_prompt="The following is a conversation with an AI assistant.",
+        system_prompt="The following is a conversation with an AI assistant. "
+        + "The assistant is helpful, creative, clever, and very friendly.",
     ):
         self.engine = engine
         self.system_prompt = system_prompt
