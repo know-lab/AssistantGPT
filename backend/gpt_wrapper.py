@@ -16,29 +16,6 @@ class GPTWrapper:
         self.engine = engine
         self.system_prompt = system_prompt
         self.chat_history = []
-        self.tools = [
-            {
-                "type": "function",
-                "function": {
-                    "name": "get_shell_command",
-                    "description": "Get the shell command to run",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "command": {
-                                "type": "string",
-                                "description": "The command to run",
-                            },
-                            "timeout": {
-                                "type": "integer",
-                                "description": "The timeout in seconds",
-                            },
-                        },
-                        "required": ["command"],
-                    },
-                },
-            }
-        ]
         self.append_system_prompt(system_prompt)
 
     def send_message(self, message):
