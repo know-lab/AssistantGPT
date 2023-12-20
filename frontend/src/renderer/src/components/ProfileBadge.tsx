@@ -1,13 +1,19 @@
-import { UseUser } from './ContextProvider'
+import { UseUser, useActiveTab } from './ContextProvider'
 
 export default function ProfileBadge(): React.ReactElement {
+  const [activeTab, setActiveTab] = useActiveTab()
   const [user, setUser] = UseUser()
 
   const login = (): void => {
-    setUser({ id: '1', name: 'Eros Pista' })
+    setActiveTab('login')
+  }
+
+  const register = (): void => {
+    setActiveTab('register')
   }
 
   const logout = (): void => {
+    //TODO: logout from backend
     setUser(null)
   }
 
@@ -25,7 +31,9 @@ export default function ProfileBadge(): React.ReactElement {
           <button onClick={login} className="profile-badge__login">
             Login
           </button>
-          <button className="profile-badge__register">Register</button>
+          <button onClick={register} className="profile-badge__register">
+            Register
+          </button>
         </>
       )}
     </article>

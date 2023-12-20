@@ -1,0 +1,50 @@
+.login {
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+  background-color: $surface-mixed-100;
+  border-radius: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &__title {
+    font-size: 2.4rem;
+    font-weight: 500;
+    color: $surface-mixed-300;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    &__input {
+      border-radius: 1.2rem;
+      border: 0.1rem solid $surface-mixed-200;
+      padding: 1rem;
+      font-size: 1.6rem;
+      color: $surface-mixed-300;
+      background-color: $surface-mixed-100;
+      transition: border-color 0.2s ease-in-out;
+
+      &:focus {
+        border: none;
+      }
+    }
+
+    &__submit {
+      border-radius: 1.2rem;
+      border: 0.1rem solid $surface-mixed-200;
+      padding: 1rem;
+      font-size: 1.6rem;
+      color: $surface-mixed-300;
+      background-color: $surface-mixed-100;
+      transition: border-color 0.2s ease-in-out;
+
+      &:hover {
+        border: none;
+      }
+    }
+  }
+}
