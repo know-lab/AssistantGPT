@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from exceptions.RequestError import RequestError
 from utils.SupabaseWrapper import SupabaseWrapper
 from utils.JWTBearer import JWTBearer
 
@@ -27,7 +28,7 @@ async def register(credentials: Credentials):
             }
         )
         return res
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -38,7 +39,7 @@ async def login(credentials: Credentials):
             {"email": credentials.email, "password": credentials.password}
         )
         return res
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -47,7 +48,7 @@ async def login_google():
     try:
         res = supabase.auth.sign_in_with_oauth({"provider": "google"})
         return res
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -56,7 +57,7 @@ async def login_microsoft():
     try:
         res = supabase.auth.sign_in_with_oauth({"provider": "microsoft"})
         return res
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -65,7 +66,7 @@ async def login_github():
     try:
         res = supabase.auth.sign_in_with_oauth({"provider": "github"})
         return res
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -74,7 +75,7 @@ async def logout():
     try:
         supabase.auth.sign_out()
         return "Successfully logged out"
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -83,7 +84,7 @@ async def get_user():
     try:
         res = supabase.auth.get_user()
         return res
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -92,7 +93,7 @@ async def get_session():
     try:
         res = supabase.auth.get_session()
         return res
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -101,5 +102,5 @@ async def get_jwt():
     try:
         res = supabase.auth.get_session()
         return res.access_token
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}

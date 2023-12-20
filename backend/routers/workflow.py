@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends
 import uuid
 
 from pydantic import BaseModel
+from exceptions.RequestError import RequestError
 from utils.JWTBearer import JWTBearer
 from utils.SupabaseWrapper import SupabaseWrapper
 
@@ -28,7 +29,7 @@ def get_workflows():
     try:
         data = supabase.from_("Workflow").select("*").execute()
         return data
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -37,7 +38,7 @@ def get_workflow(workflow_id: int):
     try:
         data = supabase.from_("Workflow").select("*").eq("id", workflow_id).execute()
         return data
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -61,7 +62,7 @@ def create_workflow(workflow: Workflow):
             .execute()
         )
         return data
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -81,7 +82,7 @@ def update_workflow(workflow: Workflow):
             .execute()
         )
         return data
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -90,5 +91,5 @@ def delete_workflow(workflow_id: int):
     try:
         data = supabase.from_("Workflow").delete().eq("id", workflow_id).execute()
         return data
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}

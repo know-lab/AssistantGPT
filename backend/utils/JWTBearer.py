@@ -1,7 +1,7 @@
 import time
 from fastapi import HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import jwt
+from jose import JWTError, jwt
 import os
 import dotenv
 
@@ -31,7 +31,7 @@ class JWTBearer(HTTPBearer):
 
         try:
             payload = self.decodeJWT(jwtoken)
-        except Exception:
+        except JWTError:
             payload = None
         if payload:
             isTokenValid = True
@@ -46,5 +46,5 @@ class JWTBearer(HTTPBearer):
                 options={"verify_aud": False},
             )
             return decoded_token if decoded_token["exp"] >= time.time() else None
-        except Exception as e:
+        except JWTError as e:
             return {"error": str(e)}

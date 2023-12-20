@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from exceptions.RequestError import RequestError
 from utils.GPTWrapper import GPTWrapper
 from utils.JWTBearer import JWTBearer
 from utils.SupabaseWrapper import SupabaseWrapper
@@ -33,7 +34,7 @@ async def get_chats():
             .execute()
         )
         return data
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -42,7 +43,7 @@ async def get_messages(chat_id: int):
     try:
         data = supabase.from_("Conversation").select("*").eq("id", chat_id).execute()
         return data
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -56,7 +57,7 @@ async def get_chatlist():
             .execute()
         )
         return data
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -75,7 +76,7 @@ async def create_chat(message: str):
             ]
         )
         return gpt_wrapper.get_chat_history()
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -89,7 +90,7 @@ async def send_message(chat_id: int, message: str):
             }
         ).eq("id", chat_id).execute()
         return gpt_wrapper.get_chat_history()
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
 
 
@@ -98,5 +99,5 @@ async def delete_chat(chat_id: int):
     try:
         data = supabase.from_("Conversation").delete().eq("id", chat_id).execute()
         return data
-    except Exception as e:
+    except RequestError as e:
         return {"error": str(e)}
