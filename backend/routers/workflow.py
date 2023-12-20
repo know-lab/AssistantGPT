@@ -29,16 +29,16 @@ supabase = SupabaseWrapper().client
 async def get_workflows():
     try:
         return supabase.from_("Workflow").select("*").execute()
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Failed to get workflows"}
 
 
 @router.get("/{workflow_id}")
 async def get_workflow(workflow_id: int):
     try:
         return supabase.from_("Workflow").select("*").eq("id", workflow_id).execute()
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Failed to get workflow"}
 
 
 @router.post("/")
@@ -60,8 +60,8 @@ async def create_workflow(workflow: Workflow):
             )
             .execute()
         )
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Failed to create workflow"}
 
 
 @router.patch("/")
@@ -79,13 +79,13 @@ async def update_workflow(workflow_id: int, workflow: Workflow):
             .eq("id", workflow_id)
             .execute()
         )
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Failed to update workflow"}
 
 
 @router.delete("/")
 async def delete_workflow(workflow_id: int):
     try:
         return supabase.from_("Workflow").delete().eq("id", workflow_id).execute()
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Failed to delete workflow"}

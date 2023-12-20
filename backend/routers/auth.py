@@ -28,40 +28,40 @@ async def register(credentials: Credentials):
                 "password": credentials.password,
             }
         )
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Registration failed"}
 
 
 @router.post("/login")
 async def login(credentials: Credentials):
     try:
         return supabase.auth.sign_in_with_password({"email": credentials.email, "password": credentials.password})
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Login failed"}
 
 
 @router.post("/login/google")
 async def login_google():
     try:
         return supabase.auth.sign_in_with_oauth({"provider": "google"})
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Login failed"}
 
 
 @router.post("/login/microsoft")
 async def login_microsoft():
     try:
         return supabase.auth.sign_in_with_oauth({"provider": "microsoft"})
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Login failed"}
 
 
 @router.post("/login/github")
 async def login_github():
     try:
         return supabase.auth.sign_in_with_oauth({"provider": "github"})
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Login failed"}
 
 
 @router.post("/logout", dependencies=[Depends(JWTBearer())])
@@ -69,24 +69,24 @@ async def logout():
     try:
         supabase.auth.sign_out()
         return "Successfully logged out"
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Logout failed"}
 
 
 @router.get("/user", dependencies=[Depends(JWTBearer())])
 async def get_user():
     try:
         return supabase.auth.get_user()
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "User not found"}
 
 
 @router.get("/session")
 async def get_session():
     try:
         return supabase.auth.get_session()
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Session not found"}
 
 
 @router.get("/jwt")
@@ -94,5 +94,5 @@ async def get_jwt():
     try:
         res = supabase.auth.get_session()
         return res.access_token
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "JWT not found"}

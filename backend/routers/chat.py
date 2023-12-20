@@ -29,24 +29,24 @@ supabase = SupabaseWrapper().client
 async def get_chats():
     try:
         return supabase.from_("Conversation").select("*").order("created_at", ascending=False).execute()
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Failed to get chats"}
 
 
 @router.get("/{chat_id}")
 async def get_messages(chat_id: int):
     try:
         return supabase.from_("Conversation").select("*").eq("id", chat_id).execute()
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Failed to get messages"}
 
 
 @router.get("/chatlist")
 async def get_chatlist():
     try:
         return supabase.from_("Conversation").select("id", "title").order("created_at", ascending=False).execute()
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Failed to get chatlist"}
 
 
 @router.post("/")
@@ -64,8 +64,8 @@ async def create_chat(message: str):
             ]
         )
         return gpt_wrapper.get_chat_history()
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Failed to create chat"}
 
 
 @router.post("/{chat_id}")
@@ -78,13 +78,13 @@ async def send_message(chat_id: int, message: str):
             }
         ).eq("id", chat_id).execute()
         return gpt_wrapper.get_chat_history()
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Failed to send message"}
 
 
 @router.delete("/")
 async def delete_chat(chat_id: int):
     try:
         return supabase.from_("Conversation").delete().eq("id", chat_id).execute()
-    except RequestError as e:
-        return {"error": str(e)}
+    except RequestError:
+        return {"error": "Failed to delete chat"}
