@@ -1,6 +1,7 @@
 import os
-from openai import OpenAI
+
 import dotenv
+from openai import OpenAI
 
 dotenv.load_dotenv()
 
@@ -21,9 +22,7 @@ class GPTWrapper:
 
     def send_message(self, message):
         self.append_user_message(message)
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo-1106", messages=self.chat_history
-        )
+        response = client.chat.completions.create(model="gpt-3.5-turbo-1106", messages=self.chat_history)
         self.append_assistant_message(response.choices[0].message.content)
         return response.choices[0].message.content
 
@@ -33,6 +32,9 @@ class GPTWrapper:
     def clear_chat_history(self):
         self.chat_history = []
         return self.chat_history
+
+    def get_chat_title(self):
+        return self.chat_history[1]["content"]
 
     def set_engine(self, engine):
         self.engine = engine
