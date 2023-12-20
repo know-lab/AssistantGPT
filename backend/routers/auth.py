@@ -89,6 +89,14 @@ async def get_session():
         return {"error": "Session not found"}
 
 
+@router.get("/refresh")
+async def refresh():
+    try:
+        return supabase.auth.refresh_session()
+    except RequestError:
+        return {"error": "Refresh failed"}
+
+
 @router.get("/jwt")
 async def get_jwt():
     try:
