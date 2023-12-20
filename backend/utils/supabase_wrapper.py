@@ -21,5 +21,3 @@ class SupabaseWrapper:
             self.client: Client = create_client(self.url, self.key)
             self._initialized = True
 
-    def get_client(self):
-        return self.client
