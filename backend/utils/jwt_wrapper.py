@@ -43,5 +43,5 @@ class JWTBearer(HTTPBearer):
                 options={"verify_aud": False},
             )
             return decoded_token if decoded_token["exp"] >= time.time() else None
-        except JWTError as e:
-            return {"error": str(e)}
+        except JWTError:
+            return {}
