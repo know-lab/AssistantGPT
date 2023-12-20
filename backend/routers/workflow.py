@@ -65,7 +65,7 @@ def create_workflow(workflow: Workflow):
         return {"error": str(e)}
 
 
-@router.patch("/{workflow_id}")
+@router.patch("/")
 def update_workflow(workflow: Workflow):
     try:
         data = (
