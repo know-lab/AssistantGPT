@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from exceptions.RequestError import RequestError
-from utils.SupabaseWrapper import SupabaseWrapper
-from utils.JWTBearer import JWTBearer
+
+from exceptions.request_error import RequestError
+from utils.jwt_wrapper import JWTBearer
+from utils.supabase_wrapper import SupabaseWrapper
 
 supabase = SupabaseWrapper().client
 
@@ -21,13 +22,12 @@ class Credentials(BaseModel):
 @router.post("/register")
 async def register(credentials: Credentials):
     try:
-        res = supabase.auth.sign_up(
+        return supabase.auth.sign_up(
             {
                 "email": credentials.email,
                 "password": credentials.password,
             }
         )
-        return res
     except RequestError as e:
         return {"error": str(e)}
 
@@ -35,10 +35,7 @@ async def register(credentials: Credentials):
 @router.post("/login")
 async def login(credentials: Credentials):
     try:
-        res = supabase.auth.sign_in_with_password(
-            {"email": credentials.email, "password": credentials.password}
-        )
-        return res
+        return supabase.auth.sign_in_with_password({"email": credentials.email, "password": credentials.password})
     except RequestError as e:
         return {"error": str(e)}
 
@@ -46,8 +43,7 @@ async def login(credentials: Credentials):
 @router.post("/login/google")
 async def login_google():
     try:
-        res = supabase.auth.sign_in_with_oauth({"provider": "google"})
-        return res
+        return supabase.auth.sign_in_with_oauth({"provider": "google"})
     except RequestError as e:
         return {"error": str(e)}
 
@@ -55,8 +51,7 @@ async def login_google():
 @router.post("/login/microsoft")
 async def login_microsoft():
     try:
-        res = supabase.auth.sign_in_with_oauth({"provider": "microsoft"})
-        return res
+        return supabase.auth.sign_in_with_oauth({"provider": "microsoft"})
     except RequestError as e:
         return {"error": str(e)}
 
@@ -64,8 +59,7 @@ async def login_microsoft():
 @router.post("/login/github")
 async def login_github():
     try:
-        res = supabase.auth.sign_in_with_oauth({"provider": "github"})
-        return res
+        return supabase.auth.sign_in_with_oauth({"provider": "github"})
     except RequestError as e:
         return {"error": str(e)}
 
@@ -82,8 +76,7 @@ async def logout():
 @router.get("/user", dependencies=[Depends(JWTBearer())])
 async def get_user():
     try:
-        res = supabase.auth.get_user()
-        return res
+        return supabase.auth.get_user()
     except RequestError as e:
         return {"error": str(e)}
 
@@ -91,8 +84,7 @@ async def get_user():
 @router.get("/session")
 async def get_session():
     try:
-        res = supabase.auth.get_session()
-        return res
+        return supabase.auth.get_session()
     except RequestError as e:
         return {"error": str(e)}
 

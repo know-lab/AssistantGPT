@@ -1,0 +1,10 @@
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ['A', 'ASYNC', 'B', 'C90', 'E', 'F', 'I', 'N', 'PERF', 'PLC', 'PLE', 'PLW', 'RET', 'RUF', 'S', 'TCH', 'W']
+ignore = ["S602"]
+
+
+[tool.ruff.format]
+quote-style = "double"

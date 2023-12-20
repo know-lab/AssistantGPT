@@ -1,11 +1,12 @@
+import uuid
+
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from exceptions.RequestError import RequestError
-from utils.GPTWrapper import GPTWrapper
-from utils.JWTBearer import JWTBearer
-from utils.SupabaseWrapper import SupabaseWrapper
 
-import uuid
+from exceptions.request_error import RequestError
+from utils.gpt_wrapper import GPTWrapper
+from utils.jwt_wrapper import JWTBearer
+from utils.supabase_wrapper import SupabaseWrapper
 
 router = APIRouter(
     prefix="/chats",
@@ -27,13 +28,7 @@ supabase = SupabaseWrapper().client
 @router.get("/")
 async def get_chats():
     try:
-        data = (
-            supabase.from_("Conversation")
-            .select("*")
-            .order("created_at", ascending=False)
-            .execute()
-        )
-        return data
+        return supabase.from_("Conversation").select("*").order("created_at", ascending=False).execute()
     except RequestError as e:
         return {"error": str(e)}
 
@@ -41,8 +36,7 @@ async def get_chats():
 @router.get("/{chat_id}")
 async def get_messages(chat_id: int):
     try:
-        data = supabase.from_("Conversation").select("*").eq("id", chat_id).execute()
-        return data
+        return supabase.from_("Conversation").select("*").eq("id", chat_id).execute()
     except RequestError as e:
         return {"error": str(e)}
 
@@ -50,13 +44,7 @@ async def get_messages(chat_id: int):
 @router.get("/chatlist")
 async def get_chatlist():
     try:
-        data = (
-            supabase.from_("Conversation")
-            .select("id", "title")
-            .order("created_at", ascending=False)
-            .execute()
-        )
-        return data
+        return supabase.from_("Conversation").select("id", "title").order("created_at", ascending=False).execute()
     except RequestError as e:
         return {"error": str(e)}
 
@@ -97,7 +85,6 @@ async def send_message(chat_id: int, message: str):
 @router.delete("/")
 async def delete_chat(chat_id: int):
     try:
-        data = supabase.from_("Conversation").delete().eq("id", chat_id).execute()
-        return data
+        return supabase.from_("Conversation").delete().eq("id", chat_id).execute()
     except RequestError as e:
         return {"error": str(e)}

@@ -1,11 +1,12 @@
 import datetime
-from fastapi import APIRouter, Depends
 import uuid
 
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from exceptions.RequestError import RequestError
-from utils.JWTBearer import JWTBearer
-from utils.SupabaseWrapper import SupabaseWrapper
+
+from exceptions.request_error import RequestError
+from utils.jwt_wrapper import JWTBearer
+from utils.supabase_wrapper import SupabaseWrapper
 
 
 class Workflow(BaseModel):
@@ -25,28 +26,26 @@ supabase = SupabaseWrapper().client
 
 
 @router.get("/")
-def get_workflows():
+async def get_workflows():
     try:
-        data = supabase.from_("Workflow").select("*").execute()
-        return data
+        return supabase.from_("Workflow").select("*").execute()
     except RequestError as e:
         return {"error": str(e)}
 
 
 @router.get("/{workflow_id}")
-def get_workflow(workflow_id: int):
+async def get_workflow(workflow_id: int):
     try:
-        data = supabase.from_("Workflow").select("*").eq("id", workflow_id).execute()
-        return data
+        return supabase.from_("Workflow").select("*").eq("id", workflow_id).execute()
     except RequestError as e:
         return {"error": str(e)}
 
 
 @router.post("/")
-def create_workflow(workflow: Workflow):
+async def create_workflow(workflow: Workflow):
     try:
         workflow_id = uuid.uuid4()
-        data = (
+        return (
             supabase.from_("Workflow")
             .insert(
                 [
@@ -61,15 +60,14 @@ def create_workflow(workflow: Workflow):
             )
             .execute()
         )
-        return data
     except RequestError as e:
         return {"error": str(e)}
 
 
 @router.patch("/")
-def update_workflow(workflow: Workflow):
+async def update_workflow(workflow_id: int, workflow: Workflow):
     try:
-        data = (
+        return (
             supabase.from_("Workflow")
             .update(
                 {
@@ -78,18 +76,16 @@ def update_workflow(workflow: Workflow):
                     "definition": workflow.definition,
                 }
             )
-            .eq("id", workflow.id)
+            .eq("id", workflow_id)
             .execute()
         )
-        return data
     except RequestError as e:
         return {"error": str(e)}
 
 
 @router.delete("/")
-def delete_workflow(workflow_id: int):
+async def delete_workflow(workflow_id: int):
     try:
-        data = supabase.from_("Workflow").delete().eq("id", workflow_id).execute()
-        return data
+        return supabase.from_("Workflow").delete().eq("id", workflow_id).execute()
     except RequestError as e:
         return {"error": str(e)}

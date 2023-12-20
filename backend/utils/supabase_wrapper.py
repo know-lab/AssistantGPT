@@ -1,6 +1,7 @@
 import os
-from supabase import create_client, Client
+
 import dotenv
+from supabase import Client, create_client
 
 dotenv.load_dotenv()
 
@@ -19,3 +20,6 @@ class SupabaseWrapper:
             self.key: str = os.environ.get("SUPABASE_KEY")
             self.client: Client = create_client(self.url, self.key)
             self._initialized = True
+
+    def get_client(self):
+        return self.client

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
-from routers import auth, workflow, chat
+from routers import auth, chat, workflow
 
 app = FastAPI()
 app.include_router(auth.router)
