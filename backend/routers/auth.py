@@ -1,4 +1,3 @@
-import re
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from utils.SupabaseWrapper import SupabaseWrapper

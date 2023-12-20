@@ -1,11 +1,11 @@
 import time
-from uu import Error
 from fastapi import HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError, jwt
+from jose import jwt
+import os
+import dotenv
 
-JWT_SECRET = "musMdMgyaNNAoYcJfXFVN27+JbO6UKAZupWArXjV5HtGRikRrM0KcSyco+ovHhRL58xpWW+ZvX9Q2MHgzEpeRw=="
-JWT_ALGORITHM = "HS256"
+dotenv.load_dotenv()
 
 
 class JWTBearer(HTTPBearer):
@@ -31,7 +31,7 @@ class JWTBearer(HTTPBearer):
 
         try:
             payload = self.decodeJWT(jwtoken)
-        except Exception as e:
+        except Exception:
             payload = None
         if payload:
             isTokenValid = True
@@ -41,10 +41,10 @@ class JWTBearer(HTTPBearer):
         try:
             decoded_token = jwt.decode(
                 token,
-                JWT_SECRET,
-                algorithms=[JWT_ALGORITHM],
+                os.environ.get("JWT_SECRET"),
+                algorithms=[os.environ.get("JWT_ALGORITHM")],
                 options={"verify_aud": False},
             )
             return decoded_token if decoded_token["exp"] >= time.time() else None
         except Exception as e:
-            return {}
+            return {"error": str(e)}
