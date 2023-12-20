@@ -4,6 +4,8 @@ import './styles/main.scss'
 import { useActiveTab } from './components/ContextProvider'
 import WorkflowDetails from './components/WorkflowDetails'
 import ProfileBadge from './components/ProfileBadge'
+import Login from './components/Login'
+import Register from './components/Register'
 
 function App(): JSX.Element {
   const [activeTab, setActiveTab] = useActiveTab()
@@ -24,6 +26,8 @@ function App(): JSX.Element {
         {activeTab === 'new-chat' && <Chat />}
         {activeTab === 'workflow' && <WorkflowDetails />}
         {activeTab === 'create-workflow' && <WorkflowDetails />}
+        {activeTab === 'login' && <Login />}
+        {activeTab === 'register' && <Register />}
       </main>
     </>
   )

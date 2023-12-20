@@ -9,6 +9,7 @@ export interface Workflow {
 export interface User {
   id: string
   name: string
+  jwt: string
 }
 
 export interface IMessage {
@@ -26,7 +27,7 @@ export type TActiveWorkflowContext = [Workflow | null, (workflow: Workflow | nul
 
 export type TActiveChatIdContext = [string | null, (chatId: string | null) => void]
 
-export type ActiveTab = 'chat' | 'new-chat' | 'workflow' | 'create-workflow'
+export type ActiveTab = 'chat' | 'new-chat' | 'workflow' | 'create-workflow' | 'login' | 'register'
 
 export type TActiveTabContext = [ActiveTab, (active: ActiveTab) => void]
 
