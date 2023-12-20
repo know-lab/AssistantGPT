@@ -5,14 +5,29 @@ export default function Register(): React.ReactElement {
   const [activeTab, setActiveTab] = useActiveTab()
   const [user, setUser] = UseUser()
 
-  const [username, setUsername] = useState<string>('')
+  const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [passwordAgain, setPasswordAgain] = useState<string>('')
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
-    setUser({ id: '1', name: username, jwt: '123' })
-    //TODO: login to backend
+    const response = await fetch('http://localhost:8000/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify({ email, password })
+    }).then((res) => res.json())
+
+    console.log(response)
+
+    if (response.error) {
+      console.log(response.error)
+      return
+    }
+
+    setActiveTab('login')
   }
 
   return (
@@ -21,10 +36,10 @@ export default function Register(): React.ReactElement {
       <form onSubmit={onSubmit} className="login__form">
         <input
           className="login__form__input"
-          value={username}
-          onChange={(e): void => setUsername(e.target.value)}
+          value={email}
+          onChange={(e): void => setEmail(e.target.value)}
           type="text"
-          placeholder="Username"
+          placeholder="email"
         />
         <input
           className="login__form__input"
