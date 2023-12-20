@@ -1,4 +1,3 @@
-import datetime
 import uuid
 
 from fastapi import APIRouter, Depends
@@ -28,7 +27,7 @@ supabase = SupabaseWrapper().client
 @router.get("/")
 async def get_workflows():
     try:
-        return supabase.from_("Workflow").select("*").execute()
+        return supabase.from_("Workflow").select("*").execute().data
     except RequestError:
         return {"error": "Failed to get workflows"}
 
@@ -36,7 +35,7 @@ async def get_workflows():
 @router.get("/{workflow_id}")
 async def get_workflow(workflow_id: int):
     try:
-        return supabase.from_("Workflow").select("*").eq("id", workflow_id).execute()
+        return supabase.from_("Workflow").select("*").eq("id", workflow_id).execute().data
     except RequestError:
         return {"error": "Failed to get workflow"}
 
@@ -45,6 +44,7 @@ async def get_workflow(workflow_id: int):
 async def create_workflow(workflow: Workflow):
     try:
         workflow_id = uuid.uuid4()
+        user_id = supabase.auth.get_user().user.id
         return (
             supabase.from_("Workflow")
             .insert(
@@ -54,11 +54,12 @@ async def create_workflow(workflow: Workflow):
                         "title": workflow.title,
                         "description": workflow.description,
                         "definition": workflow.definition,
-                        "created_at": datetime.datetime.now().isoformat(),
+                        "user_id": user_id,
                     }
                 ]
             )
             .execute()
+            .data
         )
     except RequestError:
         return {"error": "Failed to create workflow"}
@@ -78,6 +79,7 @@ async def update_workflow(workflow_id: int, workflow: Workflow):
             )
             .eq("id", workflow_id)
             .execute()
+            .data
         )
     except RequestError:
         return {"error": "Failed to update workflow"}
@@ -86,6 +88,6 @@ async def update_workflow(workflow_id: int, workflow: Workflow):
 @router.delete("/")
 async def delete_workflow(workflow_id: int):
     try:
-        return supabase.from_("Workflow").delete().eq("id", workflow_id).execute()
+        return supabase.from_("Workflow").delete().eq("id", workflow_id).execute().data
     except RequestError:
         return {"error": "Failed to delete workflow"}

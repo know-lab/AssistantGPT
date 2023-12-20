@@ -1,4 +1,3 @@
-import uuid
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
@@ -28,42 +27,46 @@ supabase = SupabaseWrapper().client
 @router.get("/")
 async def get_chats():
     try:
-        return supabase.from_("Conversation").select("*").order("created_at", ascending=False).execute()
+        return supabase.from_("Conversation").select("*").execute().data
     except RequestError:
         return {"error": "Failed to get chats"}
-
-
-@router.get("/{chat_id}")
-async def get_messages(chat_id: int):
-    try:
-        return supabase.from_("Conversation").select("*").eq("id", chat_id).execute()
-    except RequestError:
-        return {"error": "Failed to get messages"}
 
 
 @router.get("/chatlist")
 async def get_chatlist():
     try:
-        return supabase.from_("Conversation").select("id", "title").order("created_at", ascending=False).execute()
+        return supabase.from_("Conversation").select("id", "title").execute().data
     except RequestError:
         return {"error": "Failed to get chatlist"}
+
+
+@router.get("/{chat_id}")
+async def get_messages(chat_id: int):
+    try:
+        return supabase.from_("Conversation").select("*").eq("id", chat_id).execute().data
+    except RequestError:
+        return {"error": "Failed to get messages"}
 
 
 @router.post("/")
 async def create_chat(message: str):
     try:
-        chat_id = uuid.uuid4()
+        user_id = supabase.auth.get_user().user.id
         gpt_wrapper.send_message(message=message)
-        supabase.from_("Conversation").insert(
-            [
-                {
-                    "id": chat_id,
-                    "title": "Conversation " + str(chat_id),
-                    "content": gpt_wrapper.get_chat_history(),
-                }
-            ]
+        return (
+            supabase.from_("Conversation")
+            .insert(
+                [
+                    {
+                        "title": gpt_wrapper.get_chat_title(),
+                        "content": gpt_wrapper.get_chat_history(),
+                        "user_id": user_id,
+                    }
+                ]
+            )
+            .execute()
+            .data
         )
-        return gpt_wrapper.get_chat_history()
     except RequestError:
         return {"error": "Failed to create chat"}
 
@@ -72,12 +75,17 @@ async def create_chat(message: str):
 async def send_message(chat_id: int, message: str):
     try:
         gpt_wrapper.send_message(message=message)
-        supabase.from_("Conversation").update(
-            {
-                "content": gpt_wrapper.get_chat_history(),
-            }
-        ).eq("id", chat_id).execute()
-        return gpt_wrapper.get_chat_history()
+        return (
+            supabase.from_("Conversation")
+            .update(
+                {
+                    "content": gpt_wrapper.get_chat_history(),
+                }
+            )
+            .eq("id", chat_id)
+            .execute()
+            .data
+        )
     except RequestError:
         return {"error": "Failed to send message"}
 
@@ -85,6 +93,6 @@ async def send_message(chat_id: int, message: str):
 @router.delete("/")
 async def delete_chat(chat_id: int):
     try:
-        return supabase.from_("Conversation").delete().eq("id", chat_id).execute()
+        return supabase.from_("Conversation").delete().eq("id", chat_id).execute().data
     except RequestError:
         return {"error": "Failed to delete chat"}
