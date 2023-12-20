@@ -33,6 +33,9 @@ class GPTWrapper:
         self.chat_history = []
         return self.chat_history
 
+    def get_chat_title(self):
+        return self.chat_history[1]["content"]
+
     def set_engine(self, engine):
         self.engine = engine
         return self.engine
