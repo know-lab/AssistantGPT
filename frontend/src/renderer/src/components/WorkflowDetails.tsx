@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useActiveWorkflow } from './ContextProvider'
+import { UseUser, useActiveWorkflow as useActiveWorkflowId } from './ContextProvider'
 import Navigation from './Navigation'
 import { Workflow } from '@renderer/types/types'
 
 export default function WorkflowDetails(): React.ReactElement {
-  const [activeWorkflow, setActiveWorkflow] = useActiveWorkflow()
-  const [workflow, setWorkflow] = useState<Workflow | null>(activeWorkflow)
+  const [activeWorkflowId, setActiveWorkflowId] = useActiveWorkflowId()
+  const [user, setUser] = UseUser()
+
+  const [workflow, setWorkflow] = useState<Workflow | null>()
+  const [originalWorkflow, setOriginalWorkflow] = useState<Workflow | null>()
   const [isEdited, setIsEdited] = useState<boolean>(false)
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
@@ -34,17 +37,62 @@ export default function WorkflowDetails(): React.ReactElement {
   }
 
   useEffect(() => {
-    if (activeWorkflow !== null) {
-      setWorkflow(activeWorkflow)
-    }
-  }, [activeWorkflow])
+    if (activeWorkflowId === null) return
+    if (user === null) return
+    const url = `http://localhost:8000/workflow/${activeWorkflowId}`
+    console
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${user.jwt}`
+      }
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.error) {
+          console.log(response.error)
+          setWorkflow(response[0])
+          setOriginalWorkflow(response[0])
+          setActiveWorkflowId(response[0].id)
+          return
+        }
+        setWorkflow(response[0])
+        setOriginalWorkflow(response[0])
+        setActiveWorkflowId(response[0].id)
+      })
+  }, [activeWorkflowId])
 
   const handleSaveClick = (): void => {
-    //TODO: save workflow
+    if (workflow === null) return
+    if (user === null) return
+    console.log(activeWorkflowId)
+    const url = activeWorkflowId
+      ? `http://localhost:8000/workflow/${activeWorkflowId}`
+      : 'http://localhost:8000/workflow'
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${user.jwt}`
+      },
+      body: JSON.stringify(workflow)
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.error) {
+          console.log(response.error)
+          return
+        }
+        setWorkflow(response[0])
+        setOriginalWorkflow(response[0])
+        setActiveWorkflowId(response[0].id)
+      })
   }
 
   const handleCancelClick = (): void => {
-    setWorkflow(activeWorkflow)
+    setWorkflow(originalWorkflow)
+    setIsEdited(false)
   }
 
   return (
@@ -57,8 +105,8 @@ export default function WorkflowDetails(): React.ReactElement {
         <h2 className="workflow-details__content__subtitle">Title</h2>
         <input
           className="workflow-details__content__input"
-          value={workflow?.name}
-          onChange={(e): void => onPropertyChange('name', e.target.value)}
+          value={workflow?.title}
+          onChange={(e): void => onPropertyChange('title', e.target.value)}
           type="text"
           placeholder="Workflow Name"
         />
@@ -73,8 +121,8 @@ export default function WorkflowDetails(): React.ReactElement {
         <h2 className="workflow-details__content__subtitle">Script</h2>
         <textarea
           className="workflow-details__content__script"
-          value={workflow?.script}
-          onChange={(e): void => onPropertyChange('script', e.target.value)}
+          value={workflow?.definition}
+          onChange={(e): void => onPropertyChange('definition', e.target.value)}
           placeholder="Workflow Script"
         />
       </section>
