@@ -2,8 +2,9 @@ import json
 import os
 
 import dotenv
-from gpt_tools import available_tools, tools
 from openai import OpenAI
+
+from utils.gpt_tools import available_tools, tools
 
 dotenv.load_dotenv()
 

@@ -1,13 +1,5 @@
-from command_executor import CommandExecutor
-from supabase_wrapper import SupabaseWrapper
-from openai import OpenAI
-import os
-import dotenv
-
-dotenv.load_dotenv()
-
-
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+from utils.command_executor import CommandExecutor
+from utils.supabase_wrapper import SupabaseWrapper
 
 supabase = SupabaseWrapper().client
 command_executor = CommandExecutor()
@@ -145,7 +137,7 @@ def save_workflow(title, description, definition):
 def get_workflow_from_db(workflow_title):
     try:
         data = supabase.from_("Workflow").select("*").eq("title", workflow_title).execute().data
-        return run_workflow(data) 
+        return run_workflow(data)
 
     except Exception:
         return "Failed to run workflow from database."

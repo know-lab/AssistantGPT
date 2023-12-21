@@ -20,4 +20,3 @@ class SupabaseWrapper:
             self.key: str = os.environ.get("SUPABASE_KEY")
             self.client: Client = create_client(self.url, self.key)
             self._initialized = True
-
