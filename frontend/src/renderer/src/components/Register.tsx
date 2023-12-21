@@ -31,31 +31,31 @@ export default function Register(): React.ReactElement {
   }
 
   return (
-    <div className="login">
-      <h1 className="login__title">Register</h1>
-      <form onSubmit={onSubmit} className="login__form">
+    <div className="register">
+      <h1 className="register__title">Register</h1>
+      <form onSubmit={onSubmit} className="register__form">
         <input
-          className="login__form__input"
+          className="register__form__input"
           value={email}
           onChange={(e): void => setEmail(e.target.value)}
           type="text"
           placeholder="email"
         />
         <input
-          className="login__form__input"
+          className="register__form__input"
           value={password}
           onChange={(e): void => setPassword(e.target.value)}
           type="password"
           placeholder="Password"
         />
         <input
-          className="login__form__input"
+          className="register__form__input"
           value={passwordAgain}
           onChange={(e): void => setPasswordAgain(e.target.value)}
           type="password"
           placeholder="Password again"
         />
-        <button className="login__form__submit" type="submit" value="Login">
+        <button className="register__form__submit" type="submit" value="register">
           Register
         </button>
       </form>
