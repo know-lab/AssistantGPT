@@ -26,29 +26,20 @@ class GPTWrapper:
         self.append_assistant_message(response.choices[0].message.content)
         return response.choices[0].message.content
 
+    def set_chat_history(self, chat_history):
+        self.chat_history = chat_history
+        return self.chat_history
+
     def get_chat_history(self):
         return self.chat_history
 
     def clear_chat_history(self):
         self.chat_history = []
+        self.append_system_prompt(self.system_prompt)
         return self.chat_history
 
     def get_chat_title(self):
         return self.chat_history[1]["content"]
-
-    def set_engine(self, engine):
-        self.engine = engine
-        return self.engine
-
-    def get_engine(self):
-        return self.engine
-
-    def set_system_prompt(self, system_prompt):
-        self.system_prompt = system_prompt
-        return self.system_prompt
-
-    def get_system_prompt(self):
-        return self.system_prompt
 
     def append_system_prompt(self, system_prompt):
         self.chat_history.append({"role": "system", "content": system_prompt})
