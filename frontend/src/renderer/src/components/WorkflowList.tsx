@@ -1,59 +1,57 @@
-import { Workflow } from '@renderer/types/types'
-import { useActiveTab, useActiveWorkflow } from './ContextProvider'
+import { Workflow, WorkflowListItem } from '@renderer/types/types'
+import { UseUser, useActiveTab, useActiveWorkflow as useActiveWorkflowId } from './ContextProvider'
 import ChatList from './ChatList'
 import { useEffect, useState } from 'react'
 
 export default function WorkflowList(): React.ReactElement {
-  const [workflows, setWorkflows] = useState<Workflow[]>([])
+  const [user, setUser] = UseUser()
+  const [workflows, setWorkflows] = useState<WorkflowListItem[]>([])
   const [activeTab, setActiveTab] = useActiveTab()
-  const [activeWorkflow, setActiveWorkflow] = useActiveWorkflow()
+  const [activeWorkflowId, setActiveWorkflowId] = useActiveWorkflowId()
 
-  const handleWorkflowClick = (workflow: Workflow): void => {
-    setActiveWorkflow(workflow)
+  const handleWorkflowClick = (workflow_id): void => {
+    setActiveWorkflowId(workflow_id)
     setActiveTab('workflow')
   }
 
   const handleNewWorkflowClick = (): void => {
-    setActiveWorkflow(null)
+    setActiveWorkflowId(null)
     setActiveTab('create-workflow')
   }
 
   useEffect(() => {
-    //TODO: fetch workflows from backend
-    setWorkflows([
-      {
-        id: '1',
-        name: 'wf1',
-        description: 'description of the first workflow asdasdasdasdasdasdasd asafa asd sad asd',
-        script: 'script'
-      },
-      { id: '2', name: 'wf2', description: 'description of the second workflow', script: 'script' },
-      { id: '3', name: 'wf3', description: 'description of the third workflow', script: 'script' },
-      { id: '4', name: 'wf4', description: 'description of the fourth workflow', script: 'script' },
-      { id: '5', name: 'wf5', description: 'description of the fifth workflow', script: 'script' },
-      { id: '6', name: 'wf6', description: 'description of the sixth workflow', script: 'script' },
-      {
-        id: '7',
-        name: 'wf7',
-        description: 'description of the seventh workflow',
-        script: 'script'
-      },
-      { id: '8', name: 'wf8', description: 'description of the eighth workflow', script: 'script' },
-      { id: '9', name: 'wf9', description: 'description of the ninth workflow', script: 'script' },
-      { id: '10', name: 'wf10', description: 'description of the tenth workflow', script: 'script' }
-    ])
-  }, [])
+    if (user === null) return
+    const url = 'http://localhost:8000/workflow/workflowlist'
+    const response = fetch(url, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${user.jwt}`
+      }
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res)
+        if (res.error) {
+          //TODO: handle error
+          console.log(res.error)
+          return
+        }
+        setWorkflows(res)
+        return res
+      })
+  }, [activeWorkflowId, user])
 
   return (
     <section className="workflow-list">
       {workflows.map((item) => (
         <button
-          onClick={(): void => handleWorkflowClick(item)}
+          onClick={(): void => handleWorkflowClick(item.id)}
           className="workflow-list__item"
           key={item.id}
         >
-          <h1 className="workflow-list__item__title">{item.name}</h1>
-          <p className="workflow-list__item__desc">{item.description}</p>
+          <h1 className="workflow-list__item__title">{item.title}</h1>
+          {/* <p className="workflow-list__item__desc">{item.description}</p> */}
         </button>
       ))}
       <button
