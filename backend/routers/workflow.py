@@ -32,6 +32,14 @@ async def get_workflows():
         return {"error": "Failed to get workflows"}
 
 
+@router.get("/workflowlist")
+async def get_workflowlist():
+    try:
+        return supabase.from_("Workflow").select("id", "title").execute().data
+    except RequestError:
+        return {"error": "Failed to get workflowlist"}
+
+
 @router.get("/{workflow_id}")
 async def get_workflow(workflow_id: int):
     try:
@@ -43,14 +51,12 @@ async def get_workflow(workflow_id: int):
 @router.post("/")
 async def create_workflow(workflow: Workflow):
     try:
-        workflow_id = uuid.uuid4()
         user_id = supabase.auth.get_user().user.id
         return (
             supabase.from_("Workflow")
             .insert(
                 [
                     {
-                        "id": workflow_id,
                         "title": workflow.title,
                         "description": workflow.description,
                         "definition": workflow.definition,
@@ -65,7 +71,7 @@ async def create_workflow(workflow: Workflow):
         return {"error": "Failed to create workflow"}
 
 
-@router.patch("/")
+@router.post("/{workflow_id}")
 async def update_workflow(workflow_id: int, workflow: Workflow):
     try:
         return (
