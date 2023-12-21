@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
-import { useActiveChatId, useActiveTab } from './ContextProvider'
-import { Chat } from '@renderer/types/types'
+import { UseUser, useActiveChatId, useActiveTab } from './ContextProvider'
+import { Chat, ChatListItem } from '@renderer/types/types'
 
 export default function ChatList(): React.ReactElement {
+  const [user, setUser] = UseUser()
   const [activeTab, setActiveTab] = useActiveTab()
   const [activeChatId, setActiveChatId] = useActiveChatId()
 
-  const [chats, setChats] = useState<Chat[]>([])
+  const [chats, setChats] = useState<ChatListItem[]>([])
 
   const handleChatClick = (chatId: string): void => {
     setActiveChatId(chatId)
@@ -19,12 +20,27 @@ export default function ChatList(): React.ReactElement {
   }
 
   useEffect(() => {
-    //TODO: fetch messages from backend
-    setChats([
-      { id: '1', name: 'chat1', messages: [] },
-      { id: '2', name: 'chat2', messages: [] }
-    ])
-  }, [activeChatId])
+    if (user === null) return
+    const url = 'http://localhost:8000/chat/chatlist'
+    const response = fetch(url, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${user.jwt}`
+      }
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res)
+        if (res.error) {
+          setChats([])
+          console.log(res.error)
+          return
+        }
+        setChats(res)
+        return res
+      })
+  }, [activeChatId, user])
 
   return (
     <>
@@ -34,7 +50,7 @@ export default function ChatList(): React.ReactElement {
           className="workflow-list__item"
           key={item.id}
         >
-          <h1 className="workflow-list__item__title">{item.name ?? item.id}</h1>
+          <h1 className="workflow-list__item__title">{item.title ?? item.id}</h1>
           {/* <p className="workflow-list__item__desc">{item.description}</p> */}
         </button>
       ))}

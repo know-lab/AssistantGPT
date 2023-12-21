@@ -12,8 +12,15 @@ export default function ProfileBadge(): React.ReactElement {
     setActiveTab('register')
   }
 
-  const logout = (): void => {
-    //TODO: logout from backend
+  const logout = async (): Promise<void> => {
+    if (!user) return
+    const response = await fetch('http://localhost:8000/auth/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${user.jwt}`
+      }
+    })
     setUser(null)
   }
 

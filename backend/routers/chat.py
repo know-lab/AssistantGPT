@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
@@ -8,8 +7,8 @@ from utils.jwt_wrapper import JWTBearer
 from utils.supabase_wrapper import SupabaseWrapper
 
 router = APIRouter(
-    prefix="/chats",
-    tags=["chats"],
+    prefix="/chat",
+    tags=["chat"],
     responses={404: {"description": "Not found"}},
     dependencies=[Depends(JWTBearer())],
 )
@@ -17,6 +16,10 @@ router = APIRouter(
 
 class Conversation(BaseModel):
     title: str
+    content: str
+
+
+class Message(BaseModel):
     content: str
 
 
@@ -49,10 +52,11 @@ async def get_messages(chat_id: int):
 
 
 @router.post("/")
-async def create_chat(message: str):
+async def create_chat(message: Message):
     try:
         user_id = supabase.auth.get_user().user.id
-        gpt_wrapper.send_message(message=message)
+        gpt_wrapper.clear_chat_history()
+        gpt_wrapper.send_message(message=message.content)
         return (
             supabase.from_("Conversation")
             .insert(
@@ -72,9 +76,18 @@ async def create_chat(message: str):
 
 
 @router.post("/{chat_id}")
-async def send_message(chat_id: int, message: str):
+async def send_message(chat_id: int, message: Message):
     try:
-        gpt_wrapper.send_message(message=message)
+        gpt_wrapper.set_chat_history(
+            (
+                supabase.from_("Conversation")
+                .select("content")
+                .eq("id", chat_id)
+                .execute()
+                .data[0]["content"]
+            )
+        )
+        gpt_wrapper.send_message(message=message.content)
         return (
             supabase.from_("Conversation")
             .update(
