@@ -79,13 +79,7 @@ async def create_chat(message: Message):
 async def send_message(chat_id: int, message: Message):
     try:
         gpt_wrapper.set_chat_history(
-            (
-                supabase.from_("Conversation")
-                .select("content")
-                .eq("id", chat_id)
-                .execute()
-                .data[0]["content"]
-            )
+            (supabase.from_("Conversation").select("content").eq("id", chat_id).execute().data[0]["content"])
         )
         gpt_wrapper.send_message(message=message.content)
         return (
