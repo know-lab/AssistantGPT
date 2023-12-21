@@ -33,7 +33,7 @@ export default function ChatList(): React.ReactElement {
       .then((res) => {
         console.log(res)
         if (res.error) {
-          //TODO: handle error
+          setChats([])
           console.log(res.error)
           return
         }
