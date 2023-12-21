@@ -1,9 +1,14 @@
 export interface Workflow {
   id: string
-  name: string
+  title: string
   description: string
-  script: string
+  definition: string
   params?: unknown
+}
+
+export interface WorkflowListItem {
+  id: string
+  title: string
 }
 
 export interface User {
