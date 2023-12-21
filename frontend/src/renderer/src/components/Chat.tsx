@@ -3,25 +3,24 @@ import VoiceInput from './VoiceInput'
 import { UseUser, useActiveChatId } from './ContextProvider'
 import { IMessage } from '@renderer/types/types'
 
+const initialMessages: IMessage[] = [{ content: 'Hello, how can I help you?', role: 'assistant' }]
+
 export default function Chat(): React.ReactElement {
   const [activeChatId, setActiveChatId] = useActiveChatId()
   const [user, setUser] = UseUser()
 
   const [input, setInput] = useState<string>('')
-  const [messages, setMessages] = useState<IMessage[]>([])
+  const [messages, setMessages] = useState<IMessage[]>(initialMessages)
   const [voiceMessageUrl, setVoiceMessageUrl] = useState<string>('')
 
   const sendTextMessage = async (): Promise<void> => {
     if (input.length === 0) return
     if (!user) return
-    console.log('jwt', user.jwt)
-
-    console.log('send message: ', input)
     const url = activeChatId
       ? `http://localhost:8000/chat/${activeChatId}`
       : 'http://localhost:8000/chat'
 
-    console.log('body', JSON.stringify({ message: input }))
+    setMessages((messages) => [...messages, { content: input, role: 'user' }])
 
     const response = await fetch(url, {
       method: 'POST',
@@ -30,7 +29,7 @@ export default function Chat(): React.ReactElement {
         authorization: `Bearer ${user.jwt}`
       },
 
-      body: JSON.stringify({ message: input })
+      body: JSON.stringify({ content: input })
     }).then((res) => res.json())
 
     if (!response || !response[0] || !response[0].content) {
@@ -41,12 +40,10 @@ export default function Chat(): React.ReactElement {
       ])
       return
     }
-    console.log('send message: ', response)
 
-    console.log('response', response[0])
-
-    setMessages(response[0].content ?? [])
     setInput('')
+    setMessages(response[0].content ?? [])
+    setActiveChatId(response[0].id)
   }
 
   useEffect(() => {
@@ -67,7 +64,6 @@ export default function Chat(): React.ReactElement {
           setMessages((messages) => [...messages, { content: response.error, role: 'assistant' }])
           return
         }
-        console.log('get messages: ', response)
         setMessages(response[0].content ?? [])
       })
   }, [activeChatId])
@@ -96,7 +92,9 @@ export default function Chat(): React.ReactElement {
             onChange={(e): void => setInput(e.target.value)}
             value={input}
           />
-          <button className="chat__input__send" onClick={sendTextMessage}></button>
+          <button className="chat__input__send" onClick={sendTextMessage}>
+            Send
+          </button>
         </div>
       </div>
     </section>
