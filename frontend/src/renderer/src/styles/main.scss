@@ -14,7 +14,8 @@
 
 // 5. Components
 @import 'components/chat', 'components/workflow-list', 'components/workflow-details',
-  'components/navigation', 'components/profile-badge', 'components/voice-input', 'components/login';
+  'components/navigation', 'components/profile-badge', 'components/voice-input', 'components/login',
+  'components/register';
 
 // 6. Page-specific styles
 @import 'pages/home';
