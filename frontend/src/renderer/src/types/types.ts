@@ -13,14 +13,19 @@ export interface User {
 }
 
 export interface IMessage {
-  text: string
-  user: boolean
+  content: string
+  role: 'user' | 'assistant' | 'system'
 }
 
 export interface Chat {
   id: string
   name?: string
   messages: IMessage[]
+}
+
+export interface ChatListItem {
+  id: string
+  title: string
 }
 
 export type TActiveWorkflowContext = [Workflow | null, (workflow: Workflow | null) => void]
