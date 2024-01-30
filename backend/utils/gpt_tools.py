@@ -1,5 +1,6 @@
 from utils.command_executor import CommandExecutor
 from utils.supabase_wrapper import SupabaseWrapper
+import os
 
 supabase = SupabaseWrapper().client
 command_executor = CommandExecutor()
@@ -136,11 +137,31 @@ def save_workflow(title, description, definition):
 
 def get_workflow_from_db(workflow_title):
     try:
-        data = supabase.from_("Workflow").select("*").eq("title", workflow_title).execute().data
+        data = (
+            supabase.from_("Workflow")
+            .select("*")
+            .eq("title", workflow_title)
+            .execute()
+            .data
+        )
         return run_workflow(data)
 
     except Exception:
         return "Failed to run workflow from database."
+
+
+def add_command_to_allowed_list(command):
+    with open("allowed_commands.txt", "a") as f:
+        f.write(command + "\n")
+
+
+def remove_command_from_allowed_list(command):
+    with open("allowed_commands.txt", "r") as f:
+        lines = f.readlines()
+    with open("allowed_commands.txt", "w") as f:
+        for line in lines:
+            if line.strip("\n") != command:
+                f.write(line)
 
 
 available_tools = {
@@ -149,4 +170,6 @@ available_tools = {
     "get_workflows": get_workflows,
     "save_workflow": save_workflow,
     "get_workflow_from_db": get_workflow_from_db,
+    "add_command_to_allowed_list": add_command_to_allowed_list,
+    "remove_command_from_allowed_list": remove_command_from_allowed_list,
 }

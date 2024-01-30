@@ -22,8 +22,13 @@ run_command
 run_workflow
 get_workflows
 save_workflow
+add_command_to_allowed_list
+remove_command_from_allowed_list
 You must be always polite and helpful.
 You can decline to run a command if you think it's harmful.
+You should always propose command to run for the user and wait for a Should I run it? yes or no question.
+Only run the command if the user said yes!
+You have a list of the allowed commands. Only run the command if it's in the list.
 """
 
 command_result_prompt = """
@@ -85,7 +90,10 @@ class GPTWrapper:
     def send_message(self, message):
         self.append_user_message(message)
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo-1106", messages=self.chat_history, tools=self.tools, tool_choice="auto"
+            model="gpt-3.5-turbo-1106",
+            messages=self.chat_history,
+            tools=self.tools,
+            tool_choice="auto",
         )
         response = response.choices[0].message
         if response.tool_calls is not None:
@@ -127,6 +135,16 @@ class GPTWrapper:
             function_name = tool_call.function.name
             function_to_call = available_tools[function_name]
             function_args = json.loads(tool_call.function.arguments)
+            ## Check if the function command arg is in the allowed list
+            if function_name == "run_command":
+                with open("allowed_commands.txt", "r") as f:
+                    allowed_commands = f.readlines()
+                if function_args["command"] not in allowed_commands:
+                    self.append_assistant_message(
+                        f"Command {function_args['command']} is not in the allowed list."
+                    )
+                    continue
+
             function_response = function_to_call(**function_args)
 
             tool_call_result = {
@@ -134,7 +152,9 @@ class GPTWrapper:
                 "content": str(function_response),
             }
 
-            self.append_assistant_message(f"Running command {function_name} with parameters: {function_args}.")
+            self.append_assistant_message(
+                f"Running command {function_name} with parameters: {function_args}."
+            )
             self.append_assistant_message(f"Command result: {function_response}.")
 
             if function_name == "get_workflows":
@@ -149,14 +169,44 @@ class GPTWrapper:
                         tool_call_result,
                     ],
                 )
-            if function_name == "get_workflow_from_db":
-                self.append_assistant_message(f"Getting workflow {function_args} from database.")
+            elif function_name == "get_workflow_from_db":
+                self.append_assistant_message(
+                    f"Getting workflow {function_args} from database."
+                )
                 summarize_function_calls = client.chat.completions.create(
                     model="gpt-3.5-turbo-1106",
                     messages=[
                         {
                             "role": "system",
                             "content": self.db_summary_prompt,
+                        },
+                        tool_call_result,
+                    ],
+                )
+            elif function_name == "add_command_to_allowed_list":
+                self.append_assistant_message(
+                    f"Adding command {function_args} to allowed list."
+                )
+                summarize_function_calls = client.chat.completions.create(
+                    model="gpt-3.5-turbo-1106",
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": self.command_steps_prompt,
+                        },
+                        tool_call_result,
+                    ],
+                )
+            elif function_name == "remove_command_from_allowed_list":
+                self.append_assistant_message(
+                    f"Removing command {function_args} from allowed list."
+                )
+                summarize_function_calls = client.chat.completions.create(
+                    model="gpt-3.5-turbo-1106",
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": self.command_steps_prompt,
                         },
                         tool_call_result,
                     ],
@@ -172,7 +222,9 @@ class GPTWrapper:
                         tool_call_result,
                     ],
                 )
-                self.append_assistant_message(summarize_function_calls.choices[0].message.content)
+                self.append_assistant_message(
+                    summarize_function_calls.choices[0].message.content
+                )
 
             summarize_function_calls = client.chat.completions.create(
                 model="gpt-3.5-turbo-1106",
@@ -184,7 +236,9 @@ class GPTWrapper:
                     tool_call_result,
                 ],
             )
-            self.append_assistant_message(summarize_function_calls.choices[0].message.content)
+            self.append_assistant_message(
+                summarize_function_calls.choices[0].message.content
+            )
 
 
 if __name__ == "__main__":
