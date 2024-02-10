@@ -3,7 +3,29 @@ import VoiceInput from './VoiceInput'
 import { UseUser, useActiveChatId } from './ContextProvider'
 import { IMessage } from '@renderer/types/types'
 
-const initialMessages: IMessage[] = [{ content: 'Hello, how can I help you?', role: 'assistant' }]
+const initialMessages: IMessage[] = [
+  { content: 'Hello, how can I help you?', role: 'assistant', type: 'message' } /* ,
+  {
+    content: 'I am on a mac, create a new folder on my Desktop named "Dog photos"',
+    role: 'user',
+    type: 'message'
+  },
+  {
+    content: 'mkdir ~/Desktop/Dog\\ photos',
+    role: 'assistant',
+    type: 'command'
+  },
+  {
+    content: "{'command': 'mkdir ~/Desktop/Dog\\ photos'}",
+    role: 'assistant',
+    type: 'confirmation'
+  },
+  {
+    content: 'The command was successful. There was no output and no error.',
+    role: 'assistant',
+    type: 'result'
+  } */
+]
 
 export default function Chat(): React.ReactElement {
   const [activeChatId, setActiveChatId] = useActiveChatId()
@@ -20,7 +42,7 @@ export default function Chat(): React.ReactElement {
       ? `http://localhost:8000/chat/${activeChatId}`
       : 'http://localhost:8000/chat'
 
-    setMessages((messages) => [...messages, { content: input, role: 'user' }])
+    setMessages((messages) => [...messages, { content: input, role: 'user', type: 'message' }])
 
     const response = await fetch(url, {
       method: 'POST',
@@ -36,7 +58,7 @@ export default function Chat(): React.ReactElement {
       console.log(response)
       setMessages((messages) => [
         ...messages,
-        { content: JSON.stringify(response), role: 'assistant' }
+        { content: JSON.stringify(response), role: 'assistant', type: 'message' }
       ])
       return
     }
@@ -61,7 +83,10 @@ export default function Chat(): React.ReactElement {
       .then((response) => {
         if (response.error) {
           console.log(response.error)
-          setMessages((messages) => [...messages, { content: response.error, role: 'assistant' }])
+          setMessages((messages) => [
+            ...messages,
+            { content: response.error, role: 'assistant', type: 'message' }
+          ])
           return
         }
         setMessages(response[0].content ?? [])
@@ -108,10 +133,34 @@ function Message({ message }: { message: IMessage }): React.ReactElement {
         <p className="message--user__text">{message.content}</p>
       </div>
     )
-  else
+  if (message.type === 'message' || message.type === undefined)
     return (
       <div className="message--system">
         <p className="message--system__text">{message.content}</p>
       </div>
     )
+  if (message.type === 'confirmation')
+    return (
+      <div className="message--confirmation">
+        <p className="message--confirmation__text">Would you like to run this command?</p>
+        <div className="message--confirmation__buttons">
+          <button className="message--confirmation__button">Yes</button>
+          <button className="message--confirmation__button">No</button>
+        </div>
+      </div>
+    )
+  if (message.type === 'result')
+    return (
+      <div className="message--result">
+        <p className="message--result__text">{message.content}</p>
+      </div>
+    )
+  if (message.type === 'command')
+    return (
+      <div className="message--command">
+        <p className="message--command__text">{message.content}</p>
+      </div>
+    )
+
+  return <></>
 }
