@@ -1,8 +1,10 @@
-import { UseUser, useActiveTab } from './ContextProvider'
+import { useUser, useActiveChatId, useActiveTab, useActiveWorkflow } from './ContextProvider'
 
 export default function ProfileBadge(): React.ReactElement {
   const [activeTab, setActiveTab] = useActiveTab()
-  const [user, setUser] = UseUser()
+  const [user, setUser] = useUser()
+  const [activeWorkflow, setActiveWorkflow] = useActiveWorkflow()
+  const [activeChatId, setActiveChatId] = useActiveChatId()
 
   const login = (): void => {
     setActiveTab('login')
@@ -13,7 +15,7 @@ export default function ProfileBadge(): React.ReactElement {
   }
 
   const logout = async (): Promise<void> => {
-    if (!user) return
+    if (user === null) return
     const response = await fetch('http://localhost:8000/auth/logout', {
       method: 'POST',
       headers: {
@@ -22,13 +24,18 @@ export default function ProfileBadge(): React.ReactElement {
       }
     })
     setUser(null)
+    setActiveTab('chat')
+    setActiveWorkflow(null)
+    setActiveChatId(null)
   }
 
   return (
     <article className="profile-badge">
       {user && (
         <>
-          <button onClick={logout} className="profile-badge__logout" />
+          <button onClick={logout} className="profile-badge__logout">
+            X
+          </button>
           <div className="profile-badge__image"></div>
           <h1 className="profile-badge__name">{user.name}</h1>
         </>

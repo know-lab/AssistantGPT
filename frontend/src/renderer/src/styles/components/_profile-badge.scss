@@ -28,14 +28,18 @@
 
   &__logout {
     position: absolute;
-    right: 0;
-    top: 0;
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 1rem;
+    right: -0.5rem;
+    top: -0.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 2.5rem;
     background-color: $error-100;
     border: none;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 
   &__login,
