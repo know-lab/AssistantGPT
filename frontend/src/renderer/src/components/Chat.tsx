@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import VoiceInput from './VoiceInput'
-import { UseUser, useActiveChatId } from './ContextProvider'
+import { useUser, useActiveChatId } from './ContextProvider'
 import { IMessage } from '@renderer/types/types'
 
 const initialMessages: IMessage[] = [
@@ -29,7 +29,7 @@ const initialMessages: IMessage[] = [
 
 export default function Chat(): React.ReactElement {
   const [activeChatId, setActiveChatId] = useActiveChatId()
-  const [user, setUser] = UseUser()
+  const [user, setUser] = useUser()
 
   const [input, setInput] = useState<string>('')
   const [messages, setMessages] = useState<IMessage[]>(initialMessages)

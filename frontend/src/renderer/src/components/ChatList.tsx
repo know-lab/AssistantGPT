@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { UseUser, useActiveChatId, useActiveTab } from './ContextProvider'
+import { useUser, useActiveChatId, useActiveTab } from './ContextProvider'
 import { Chat, ChatListItem } from '@renderer/types/types'
 
 export default function ChatList(): React.ReactElement {
-  const [user, setUser] = UseUser()
+  const [user, setUser] = useUser()
   const [activeTab, setActiveTab] = useActiveTab()
   const [activeChatId, setActiveChatId] = useActiveChatId()
 
@@ -20,7 +20,10 @@ export default function ChatList(): React.ReactElement {
   }
 
   useEffect(() => {
-    if (user === null) return
+    if (user === null) {
+      setChats([])
+      return
+    }
     const url = 'http://localhost:8000/chat/chatlist'
     const response = fetch(url, {
       method: 'get',

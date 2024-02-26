@@ -61,7 +61,7 @@ export const useActiveChatId = (): TActiveChatIdContext => {
   return context
 }
 
-export const UseUser = (): TUserContext => {
+export const useUser = (): TUserContext => {
   const context = useContext(UserContext)
   if (!context) {
     throw new Error('useActiveWorkflow must be used within a ContextProvider')
@@ -70,6 +70,6 @@ export const UseUser = (): TUserContext => {
 }
 
 export const isAuthenticated = (): boolean => {
-  const [user] = UseUser()
+  const [user] = useUser()
   return user !== null
 }

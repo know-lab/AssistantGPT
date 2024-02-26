@@ -1,10 +1,10 @@
 import { Workflow, WorkflowListItem } from '@renderer/types/types'
-import { UseUser, useActiveTab, useActiveWorkflow as useActiveWorkflowId } from './ContextProvider'
+import { useUser, useActiveTab, useActiveWorkflow as useActiveWorkflowId } from './ContextProvider'
 import ChatList from './ChatList'
 import { useEffect, useState } from 'react'
 
 export default function WorkflowList(): React.ReactElement {
-  const [user, setUser] = UseUser()
+  const [user, setUser] = useUser()
   const [workflows, setWorkflows] = useState<WorkflowListItem[]>([])
   const [activeTab, setActiveTab] = useActiveTab()
   const [activeWorkflowId, setActiveWorkflowId] = useActiveWorkflowId()
@@ -20,7 +20,10 @@ export default function WorkflowList(): React.ReactElement {
   }
 
   useEffect(() => {
-    if (user === null) return
+    if (user === null) {
+      setWorkflows([])
+      return
+    }
     const url = 'http://localhost:8000/workflow/workflowlist'
     const response = fetch(url, {
       method: 'get',
