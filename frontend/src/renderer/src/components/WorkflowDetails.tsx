@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { UseUser, useActiveWorkflow as useActiveWorkflowId } from './ContextProvider'
+import { useUser, useActiveWorkflow as useActiveWorkflowId } from './ContextProvider'
 import Navigation from './Navigation'
 import { Workflow } from '@renderer/types/types'
 
 export default function WorkflowDetails(): React.ReactElement {
   const [activeWorkflowId, setActiveWorkflowId] = useActiveWorkflowId()
-  const [user, setUser] = UseUser()
+  const [user, setUser] = useUser()
 
   const [workflow, setWorkflow] = useState<Workflow | null>()
   const [originalWorkflow, setOriginalWorkflow] = useState<Workflow | null>()

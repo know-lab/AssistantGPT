@@ -68,8 +68,3 @@ export const useUser = (): TUserContext => {
   }
   return context
 }
-
-export const isAuthenticated = (): boolean => {
-  const [user] = useUser()
-  return user !== null
-}
