@@ -52,5 +52,12 @@
         border: none;
       }
     }
+
+    &__error {
+      color: $error-300;
+      font-size: 1.4rem;
+      font-weight: 500;
+      width: 100%;
+    }
   }
 }
