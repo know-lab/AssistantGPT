@@ -84,8 +84,11 @@ class GPTWrapper:
 
     def send_message(self, message):
         self.append_user_message(message)
+        chat_history_without_type = [
+            {"role": message["role"], "content": message["content"]} for message in self.chat_history
+        ]
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo-1106", messages=self.chat_history, tools=self.tools, tool_choice="auto"
+            model="gpt-3.5-turbo-1106", messages=chat_history_without_type, tools=self.tools, tool_choice="auto"
         )
         response = response.choices[0].message
         if response.tool_calls is not None:
@@ -111,15 +114,17 @@ class GPTWrapper:
         return self.chat_history[1]["content"]
 
     def append_system_prompt(self, system_prompt):
-        self.chat_history.append({"role": "system", "content": system_prompt})
+        self.chat_history.append(
+            {"role": "system", "content": system_prompt, "type": "message"}
+        )  # TODO: add type prompt
         return self.chat_history
 
     def append_user_message(self, message):
-        self.chat_history.append({"role": "user", "content": message})
+        self.chat_history.append({"role": "user", "content": message, "type": "message"})
         return self.chat_history
 
-    def append_assistant_message(self, message):
-        self.chat_history.append({"role": "assistant", "content": message})
+    def append_assistant_message(self, message, message_type):
+        self.chat_history.append({"role": "assistant", "content": message, "type": message_type})
         return self.chat_history
 
     def use_tools(self, tool_calls):
@@ -134,11 +139,13 @@ class GPTWrapper:
                 "content": str(function_response),
             }
 
-            self.append_assistant_message(f"Running command {function_name} with parameters: {function_args}.")
-            self.append_assistant_message(f"Command result: {function_response}.")
+            self.append_assistant_message(
+                f"Running command {function_name} with parameters: {function_args}.", "command"
+            )
+            self.append_assistant_message(f"Command result: {function_response}.", "result")
 
             if function_name == "get_workflows":
-                self.append_assistant_message("Getting workflows from database.")
+                self.append_assistant_message("Getting workflows from database.", "message")
                 summarize_function_calls = client.chat.completions.create(
                     model="gpt-3.5-turbo-1106",
                     messages=[
@@ -150,7 +157,7 @@ class GPTWrapper:
                     ],
                 )
             if function_name == "get_workflow_from_db":
-                self.append_assistant_message(f"Getting workflow {function_args} from database.")
+                self.append_assistant_message(f"Getting workflow {function_args} from database.", "message")
                 summarize_function_calls = client.chat.completions.create(
                     model="gpt-3.5-turbo-1106",
                     messages=[
@@ -172,7 +179,7 @@ class GPTWrapper:
                         tool_call_result,
                     ],
                 )
-                self.append_assistant_message(summarize_function_calls.choices[0].message.content)
+                self.append_assistant_message(summarize_function_calls.choices[0].message.content, "message")
 
             summarize_function_calls = client.chat.completions.create(
                 model="gpt-3.5-turbo-1106",
@@ -184,7 +191,7 @@ class GPTWrapper:
                     tool_call_result,
                 ],
             )
-            self.append_assistant_message(summarize_function_calls.choices[0].message.content)
+            self.append_assistant_message(summarize_function_calls.choices[0].message.content, "message")
 
 
 if __name__ == "__main__":
