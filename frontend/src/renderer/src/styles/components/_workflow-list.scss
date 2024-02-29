@@ -25,6 +25,7 @@
     padding: 1rem 2rem;
     border: none;
     text-align: left;
+    position: relative;
 
     &--add {
       background-color: $surface-mixed-200;
@@ -33,6 +34,10 @@
 
     &:hover {
       background-color: $surface-mixed-300;
+
+      .workflow-list__item__delete {
+        display: flex;
+      }
     }
 
     &--active {
@@ -41,7 +46,6 @@
 
     &__title {
       width: 20rem;
-      height: 1.4rem;
       font-size: 1.4rem;
       font-weight: 500;
       color: $text-100;
@@ -52,13 +56,28 @@
 
     &__desc {
       width: 20rem;
-      height: 1.4rem;
       font-size: 1.2rem;
       font-weight: 400;
       color: $text-200;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    &__delete {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 2.5rem;
+      background-color: $error-100;
+      border: none;
+      cursor: pointer;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
     }
   }
 }

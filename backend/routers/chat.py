@@ -97,9 +97,10 @@ async def send_message(chat_id: int, message: Message):
         return {"error": "Failed to send message"}
 
 
-@router.delete("/")
+@router.delete("/{chat_id}")
 async def delete_chat(chat_id: int):
     try:
+        print("DELETING", chat_id)
         return supabase.from_("Conversation").delete().eq("id", chat_id).execute().data
     except RequestError:
         return {"error": "Failed to delete chat"}

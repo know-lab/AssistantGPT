@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { UseUser, useActiveTab } from './ContextProvider'
+import { useUser, useActiveTab } from './ContextProvider'
 
 export default function Login(): React.ReactElement {
   const [activeTab, setActiveTab] = useActiveTab()
-  const [user, setUser] = UseUser()
+  const [user, setUser] = useUser()
 
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -50,6 +50,15 @@ export default function Login(): React.ReactElement {
           Login
         </button>
       </form>
+
+      <button
+        onClick={(): void => {
+          setEmail('123@asd.hu')
+          setPassword('asdasd')
+        }}
+      >
+        Fill with default user
+      </button>
     </div>
   )
 }
