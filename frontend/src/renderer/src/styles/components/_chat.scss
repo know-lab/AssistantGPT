@@ -135,6 +135,7 @@
   }
 
   &__button {
+    color: $text-900;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     border: none;
@@ -149,11 +150,28 @@
       }
     }
 
+    &:disabled {
+      color: $text-900;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: not-allowed;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
     &:last-child {
       background-color: $error-300;
       &:hover {
         background-color: darken($error-300, 10%);
       }
+    }
+
+    &--selected {
+      border: 0.2rem solid $surface-100;
+    }
+
+    &--not-selected {
+      background-color: $surface-600 !important;
     }
   }
 }

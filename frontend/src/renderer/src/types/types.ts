@@ -20,7 +20,7 @@ export interface User {
 export interface IMessage {
   content: string
   role: 'user' | 'assistant' | 'system'
-  type: 'message' | 'confirmation' | 'result' | 'command'
+  type: 'message' | 'confirmation-request' | 'confirmation-answer' | 'result' | 'command'
 }
 
 export interface Chat {
