@@ -1,5 +1,5 @@
 import { Workflow, WorkflowListItem } from '@renderer/types/types'
-import { useUser, useActiveTab, useActiveWorkflow as useActiveWorkflowId } from './ContextProvider'
+import { useUser, useActiveTab, useActiveWorkflowId, useActiveApiActionId } from './ContextProvider'
 import ChatList from './ChatList'
 import { useEffect, useState } from 'react'
 
@@ -8,6 +8,7 @@ export default function WorkflowList(): React.ReactElement {
   const [workflows, setWorkflows] = useState<WorkflowListItem[]>([])
   const [activeTab, setActiveTab] = useActiveTab()
   const [activeWorkflowId, setActiveWorkflowId] = useActiveWorkflowId()
+  const [activeApiActionId, setActiveApiActionId] = useActiveApiActionId()
 
   const handleWorkflowClick = (workflow_id): void => {
     setActiveWorkflowId(workflow_id)
@@ -17,6 +18,11 @@ export default function WorkflowList(): React.ReactElement {
   const handleNewWorkflowClick = (): void => {
     setActiveWorkflowId(null)
     setActiveTab('create-workflow')
+  }
+
+  const handleNewApiActionClick = (): void => {
+    setActiveApiActionId(null)
+    setActiveTab('create-api-action')
   }
 
   useEffect(() => {
@@ -62,6 +68,12 @@ export default function WorkflowList(): React.ReactElement {
         className="workflow-list__item workflow-list__item--add"
       >
         <h1 className="workflow-list__item__title">Create Workflow</h1>
+      </button>
+      <button
+        onClick={handleNewApiActionClick}
+        className="workflow-list__item workflow-list__item--add"
+      >
+        <h1 className="workflow-list__item__title">Create API Action</h1>
       </button>
       <ChatList />
     </section>
