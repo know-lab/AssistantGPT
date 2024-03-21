@@ -7,6 +7,7 @@ import ProfileBadge from './components/ProfileBadge'
 import Login from './components/Login'
 import Register from './components/Register'
 import AssistantLogo from './assets/assistant-logo.png'
+import ApiActionDetails from './components/ApiActionDetails'
 
 function App(): JSX.Element {
   const [activeTab, setActiveTab] = useActiveTab()
@@ -45,6 +46,8 @@ function App(): JSX.Element {
         {user !== null && activeTab === 'new-chat' && <Chat />}
         {user !== null && activeTab === 'workflow' && <WorkflowDetails />}
         {user !== null && activeTab === 'create-workflow' && <WorkflowDetails />}
+        {user !== null && activeTab === 'api-action' && <ApiActionDetails />}
+        {user !== null && activeTab === 'create-api-action' && <ApiActionDetails />}
       </main>
     </>
   )

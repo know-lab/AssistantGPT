@@ -3,7 +3,7 @@ import { useUser, useActiveWorkflowId } from './ContextProvider'
 import Navigation from './Navigation'
 import { Workflow } from '@renderer/types/types'
 
-export default function WorkflowDetails(): React.ReactElement {
+export default function ApiActionDetails(): React.ReactElement {
   const [activeWorkflowId, setActiveWorkflowId] = useActiveWorkflowId()
   const [user, setUser] = useUser()
 
@@ -39,7 +39,7 @@ export default function WorkflowDetails(): React.ReactElement {
   useEffect(() => {
     if (activeWorkflowId === null) return
     if (user === null) return
-    const url = `http://localhost:8000/workflow/${activeWorkflowId}`
+    const url = `http://localhost:8000/apiaction/${activeWorkflowId}`
     console
     fetch(url, {
       method: 'GET',
@@ -99,7 +99,7 @@ export default function WorkflowDetails(): React.ReactElement {
     <section className="workflow-details">
       <section className="workflow-details__header">
         <Navigation prevTab="chat" />
-        <h1 className="workflow-details__title">Workflow Details</h1>
+        <h1 className="workflow-details__title">API Action Details</h1>
       </section>
       <section className="workflow-details__content">
         <h2 className="workflow-details__content__subtitle">Title</h2>
@@ -108,7 +108,7 @@ export default function WorkflowDetails(): React.ReactElement {
           value={workflow?.title}
           onChange={(e): void => onPropertyChange('title', e.target.value)}
           type="text"
-          placeholder="Workflow Name"
+          placeholder="API Action Name"
         />
         <h2 className="workflow-details__content__subtitle">Description</h2>
         <input
@@ -116,14 +116,37 @@ export default function WorkflowDetails(): React.ReactElement {
           value={workflow?.description}
           onChange={(e): void => onPropertyChange('description', e.target.value)}
           type="text"
-          placeholder="Workflow Description"
+          placeholder="API Action Description"
         />
-        <h2 className="workflow-details__content__subtitle">Script</h2>
+        <h2 className="workflow-details__content__subtitle">Endpoint</h2>
+        <input
+          className="workflow-details__content__input"
+          value={workflow?.description}
+          onChange={(e): void => onPropertyChange('description', e.target.value)}
+          type="text"
+          placeholder="API Action Endpoint"
+        />
+        <h2 className="workflow-details__content__subtitle">Method</h2>
+        <input
+          className="workflow-details__content__input"
+          value={workflow?.description}
+          onChange={(e): void => onPropertyChange('description', e.target.value)}
+          type="text"
+          placeholder="GET / POST / PUT / DELETE..."
+        />
+        <h2 className="workflow-details__content__subtitle">Header</h2>
         <textarea
           className="workflow-details__content__script"
           value={workflow?.definition}
           onChange={(e): void => onPropertyChange('definition', e.target.value)}
-          placeholder="Workflow Script"
+          placeholder="API Action Header (Optional)"
+        />
+        <h2 className="workflow-details__content__subtitle">Schema</h2>
+        <textarea
+          className="workflow-details__content__script"
+          value={workflow?.definition}
+          onChange={(e): void => onPropertyChange('definition', e.target.value)}
+          placeholder="API Action Schema"
         />
       </section>
       <section className="workflow-details__footer">

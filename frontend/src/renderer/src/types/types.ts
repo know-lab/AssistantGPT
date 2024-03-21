@@ -6,6 +6,16 @@ export interface Workflow {
   params?: unknown
 }
 
+export interface ApiAction {
+  id: string
+  title: string
+  description: string
+  endpoint: string
+  schema: string
+  method: string
+  header?: string
+}
+
 export interface WorkflowListItem {
   id: string
   title: string
@@ -34,11 +44,21 @@ export interface ChatListItem {
   title: string
 }
 
-export type TActiveWorkflowContext = [Workflow | null, (workflow: Workflow | null) => void]
+export type TActiveWorkflowIdContext = [string | null, (workflowId: string | null) => void]
+
+export type TActiveApiActionIdContext = [string | null, (apiActionId: string | null) => void]
 
 export type TActiveChatIdContext = [string | null, (chatId: string | null) => void]
 
-export type ActiveTab = 'chat' | 'new-chat' | 'workflow' | 'create-workflow' | 'login' | 'register'
+export type ActiveTab =
+  | 'chat'
+  | 'new-chat'
+  | 'workflow'
+  | 'create-workflow'
+  | 'api-action'
+  | 'create-api-action'
+  | 'login'
+  | 'register'
 
 export type TActiveTabContext = [ActiveTab, (active: ActiveTab) => void]
 

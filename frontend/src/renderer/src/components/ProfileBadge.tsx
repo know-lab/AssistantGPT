@@ -1,9 +1,9 @@
-import { useUser, useActiveChatId, useActiveTab, useActiveWorkflow } from './ContextProvider'
+import { useUser, useActiveChatId, useActiveTab, useActiveWorkflowId } from './ContextProvider'
 
 export default function ProfileBadge(): React.ReactElement {
   const [activeTab, setActiveTab] = useActiveTab()
   const [user, setUser] = useUser()
-  const [activeWorkflow, setActiveWorkflow] = useActiveWorkflow()
+  const [activeWorkflowId, setActiveWorkflowId] = useActiveWorkflowId()
   const [activeChatId, setActiveChatId] = useActiveChatId()
 
   const login = (): void => {
@@ -25,7 +25,7 @@ export default function ProfileBadge(): React.ReactElement {
     })
     setUser(null)
     setActiveTab('chat')
-    setActiveWorkflow(null)
+    setActiveWorkflowId(null)
     setActiveChatId(null)
   }
 
