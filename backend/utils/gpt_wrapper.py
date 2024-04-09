@@ -82,8 +82,8 @@ class GPTWrapper:
         self.tools = tools
         self.append_system_prompt(system_prompt)
 
-    def send_message(self, message):
-        self.append_user_message(message)
+    def send_message(self, message, message_type="message"):
+        self.append_user_message(message, message_type)
         chat_history_without_type = [
             {"role": message["role"], "content": message["content"]} for message in self.chat_history
         ]
@@ -94,7 +94,7 @@ class GPTWrapper:
         if response.tool_calls is not None:
             self.use_tools(response.tool_calls)
         else:
-            self.append_assistant_message(response.content)
+            self.append_assistant_message(response.content, "message")
 
         return response.content
 
@@ -115,12 +115,12 @@ class GPTWrapper:
 
     def append_system_prompt(self, system_prompt):
         self.chat_history.append(
-            {"role": "system", "content": system_prompt, "type": "message"}
+            {"role": "system", "content": system_prompt, "type": "prompt"}
         )  # TODO: add type prompt
         return self.chat_history
 
-    def append_user_message(self, message):
-        self.chat_history.append({"role": "user", "content": message, "type": "message"})
+    def append_user_message(self, message, message_type="message"):
+        self.chat_history.append({"role": "user", "content": message, "type": message_type})
         return self.chat_history
 
     def append_assistant_message(self, message, message_type):

@@ -21,6 +21,7 @@ class Conversation(BaseModel):
 
 class Message(BaseModel):
     content: str
+    type: str
 
 
 gpt_wrapper = GPTWrapper()
@@ -56,7 +57,7 @@ async def create_chat(message: Message):
     try:
         user_id = supabase.auth.get_user().user.id
         gpt_wrapper.clear_chat_history()
-        gpt_wrapper.send_message(message=message.content)
+        gpt_wrapper.send_message(message=message.content, message_type=message.type)
         return (
             supabase.from_("Conversation")
             .insert(
