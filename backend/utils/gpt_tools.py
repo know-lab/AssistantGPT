@@ -1,3 +1,5 @@
+from re import L
+import requests
 from utils.command_executor import CommandExecutor
 from utils.supabase_wrapper import SupabaseWrapper
 
@@ -91,6 +93,81 @@ tools = [
         },
         "required": ["workflow_title"],
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_weather",
+            "description": "Gets the weather for a location.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The location to get the weather for.",
+                    },
+                },
+            },
+        },
+        "required": ["location"],
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_colors",
+            "description": "Gets a list of colors.",
+            "parameters": {},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_passing_yards",
+            "description": "Gets a list of passing yards.",
+            "parameters": {},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_movies",
+            "description": "Gets a list of movies.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "genre": {
+                        "type": "string",
+                        "description": "The genre of the movies. should be one of: action-adventure, comedy, drama, horror, romance, scifi-fantasy",
+                    },
+                },
+            },
+        },
+        "required": ["genre"],
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_stocks",
+            "description": "Gets a list of stocks.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_name": {
+                        "type": "string",
+                        "description": "The name of the stock.",
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "description": "The start date.",
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "description": "The end date.",
+                    },
+                },
+            },
+        },
+        "required": ["stock_name", "start_date", "end_date"],
+    },
 ]
 
 
@@ -142,6 +219,45 @@ def get_workflow_from_db(workflow_title):
     except Exception:
         return "Failed to run workflow from database."
 
+def get_weather(location):
+    # Define the URL for the OpenWeatherMap API
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={location}&appid=2e48fd59abf2968bb7c62f3274d0a7d2"
+
+    # Make the HTTP GET request
+    response = requests.get(url, timeout=5)
+
+    # Parse the response
+    weather_data = response.json()
+
+    # Return the weather data
+    return weather_data
+
+def get_colors():
+    # https://api.sampleapis.com/csscolornames/colors
+    url = "https://api.sampleapis.com/csscolornames/colors"
+    response = requests.get(url, timeout=5)
+    colors = response.json()
+    return colors
+
+# https://api.sampleapis.com/football/passingyards-singleseason
+def get_passing_yards():
+    url = "https://api.sampleapis.com/football/passingyards-singleseason"
+    response = requests.get(url, timeout=5)
+    passing_yards = response.json()
+    return passing_yards
+
+# https://api.sampleapis.com/movies/action-adventure
+def get_movies(genre):
+    url = f"https://api.sampleapis.com/movies/{genre}"
+    response = requests.get(url, timeout=5)
+    movies = response.json()
+    return movies
+
+def get_stocks(stock_name, start_date, end_date):
+    url = f"https://api.polygon.io/v2/aggs/ticker/{stock_name}/range/1/day/{start_date}/{end_date}?adjusted=true&sort=asc&limit=120&apiKey=p_FpaDLz886gIXpPky6D5oKxpmQfCnpq"
+    response = requests.get(url, timeout=5)
+    stocks = response.json()
+    return stocks
 
 available_tools = {
     "run_command": run_command,
@@ -149,4 +265,9 @@ available_tools = {
     "get_workflows": get_workflows,
     "save_workflow": save_workflow,
     "get_workflow_from_db": get_workflow_from_db,
+    "get_weather": get_weather,
+    "get_colors": get_colors,
+    "get_passing_yards": get_passing_yards,
+    "get_movies": get_movies,
+    "get_stocks": get_stocks,
 }

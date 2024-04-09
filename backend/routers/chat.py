@@ -105,3 +105,12 @@ async def delete_chat(chat_id: int):
         return supabase.from_("Conversation").delete().eq("id", chat_id).execute().data
     except RequestError:
         return {"error": "Failed to delete chat"}
+    
+@router.post("/{chat_id}/read_message")
+async def read_message(chat_id: int):
+    try:
+        gpt_wrapper.use_tts()
+        return {"message": "Successfully read message"}
+        
+    except RequestError:
+        return {"error": "Failed to read message"}

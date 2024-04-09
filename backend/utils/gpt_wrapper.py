@@ -1,5 +1,8 @@
 import json
+from pathlib import Path
 import os
+from pydub import AudioSegment
+from pydub.playback import play
 
 import dotenv
 from openai import OpenAI
@@ -7,6 +10,8 @@ from openai import OpenAI
 from utils.gpt_tools import available_tools, tools
 
 dotenv.load_dotenv()
+import sys
+
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -24,6 +29,7 @@ get_workflows
 save_workflow
 You must be always polite and helpful.
 You can decline to run a command if you think it's harmful.
+You should wait for a yes confirmation before running any commands, and explain what would you run.
 """
 
 command_result_prompt = """
@@ -193,6 +199,18 @@ class GPTWrapper:
             )
             self.append_assistant_message(summarize_function_calls.choices[0].message.content, "message")
 
+    def use_tts(self):
+        speech_file_path = Path(__file__).parent / "speech.mp3"
+        response = client.audio.speech.create(
+        model="tts-1",
+        voice="alloy",
+        input=self.chat_history[-1]["content"],
+        )
+
+        response.stream_to_file(speech_file_path)
+
+        song = AudioSegment.from_file(str(speech_file_path))
+        play(song)
 
 if __name__ == "__main__":
     gpt = GPTWrapper()

@@ -42,6 +42,23 @@ export default function Chat(): React.ReactElement {
 
   const [inputsEnabled, setInputsEnabled] = useState<boolean>(true)
 
+  const sendRead = async (): Promise<void> => {
+    if (!user) return
+    if (!activeChatId) return
+    const url = `http://localhost:8000/chat/${activeChatId}/read_message`
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${user.jwt}`
+      }
+    }).then((res) => res.json())
+    // play speech.mp3 from backend/utils folder
+    const audio = new Audio('/Users/kamka/AssistantGPT/backend/utils/speech.mp3')
+    console.log(audio)
+    audio.play()
+  }
+
   const sendTextMessage = async (inputText: string, inputType: IMessage['type']): Promise<void> => {
     if (inputText.length === 0) return
     if (!user) return
@@ -132,6 +149,9 @@ export default function Chat(): React.ReactElement {
           />
           <button className="chat__input__send" onClick={() => sendTextMessage(input, 'message')}>
             Send
+          </button>
+          <button className="chat__input__send" onClick={() => sendRead()}>
+            Read
           </button>
         </div>
       </div>

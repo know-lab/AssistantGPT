@@ -1,4 +1,5 @@
 import { Mic } from '@renderer/icons/Mic'
+import { writeFile } from 'fs'
 import { useEffect, useState } from 'react'
 
 interface VoiceInputProps {
@@ -24,13 +25,37 @@ export default function VoiceInput(props: VoiceInputProps): React.ReactElement {
           }
         }
 
+        console.log('recorder', recorder)
+
         recorder.onstop = (): void => {
           const tracks = stream.getTracks()
           tracks.forEach((track) => track.stop())
 
-          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' })
-          const audioUrl = URL.createObjectURL(audioBlob)
-          props.setUrl(audioUrl)
+          // // Convert the audio chunks to a Blob
+          // const blob = new Blob(audioChunks, { type: 'audio/wav' })
+
+          // // Convert the Blob to a Buffer
+          // blob.arrayBuffer().then((arrayBuffer) => {
+          //   const buffer = Buffer.from(arrayBuffer)
+
+          //   // Save the Buffer to a file in current directory
+          //   const filePath = 'audio.wav'
+          //   if (filePath) {
+          //     // Write the Buffer to a file
+          //     writeFile(filePath, buffer, (err) => {
+          //       if (err) {
+          //         console.error('Error saving file:', err)
+          //       } else {
+          //         console.log('File saved:', filePath)
+          //       }
+          //     })
+          //   }
+          // })
+
+          
+
+
+          // console.log('Audio chunks:', audioChunks)
           setIsRecording(false)
         }
 
