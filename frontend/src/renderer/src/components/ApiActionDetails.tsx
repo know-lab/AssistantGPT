@@ -147,7 +147,7 @@ export default function ApiActionDetails(): React.ReactElement {
         <textarea
           className="workflow-details__content__script"
           value={api_def?.schema_}
-          onChange={(e): void => onPropertyChange('definition', e.target.value)}
+          onChange={(e): void => onPropertyChange('schema_', e.target.value)}
           placeholder="API Action Schema"
         />
       </section>
