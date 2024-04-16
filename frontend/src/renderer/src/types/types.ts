@@ -16,8 +16,6 @@ export interface ApiAction {
   schema_: string
 }
 
-
-
 export interface WorkflowListItem {
   id: string
   title: string

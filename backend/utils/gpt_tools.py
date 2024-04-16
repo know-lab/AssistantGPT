@@ -2,6 +2,8 @@ from re import L
 import requests
 from utils.command_executor import CommandExecutor
 from utils.supabase_wrapper import SupabaseWrapper
+from bs4 import BeautifulSoup
+
 
 supabase = SupabaseWrapper().client
 command_executor = CommandExecutor()
@@ -277,8 +279,10 @@ def get_stocks(stock_name, start_date, end_date):
     return stocks
 
 def process_website(url):
-    html_page = requests.get(url, timeout=5)
-    return html_page.text
+    soup = BeautifulSoup(requests.get(url, timeout=5).text, "lxml")
+    soup.body.get_text(strip=True)
+    # only return first 6000 characters
+    return soup.get_text(strip=True)[:6000]
 
 available_tools = {
     "run_command": run_command,

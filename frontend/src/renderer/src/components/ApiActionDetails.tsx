@@ -16,9 +16,12 @@ export default function ApiActionDetails(): React.ReactElement {
     let newApi
     if (api_def === null) {
       newApi = {
-        name: '',
+        title: '',
         description: '',
-        script: ''
+        endpoint: '',
+        method: '',
+        header: '',
+        schema_: ''
       }
     } else {
       newApi = { ...api_def }
