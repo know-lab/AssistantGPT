@@ -53,7 +53,6 @@ async def get_messages(api_id: int):
 
 @router.post("/")
 async def create_api(apidef: ApiDef):
-    print(apidef)
     try:
         user_id = supabase.auth.get_user().user.id
         return (

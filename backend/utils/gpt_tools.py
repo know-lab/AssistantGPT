@@ -168,6 +168,23 @@ tools = [
         },
         "required": ["stock_name", "start_date", "end_date"],
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "process_website",
+            "description": "Processes a website.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "description": "The URL of the website.",
+                    },
+                },
+            },
+        },
+        "required": ["url"],
+    },
 ]
 
 
@@ -259,6 +276,10 @@ def get_stocks(stock_name, start_date, end_date):
     stocks = response.json()
     return stocks
 
+def process_website(url):
+    html_page = requests.get(url, timeout=5)
+    return html_page.text
+
 available_tools = {
     "run_command": run_command,
     "run_workflow": run_workflow,
@@ -270,4 +291,5 @@ available_tools = {
     "get_passing_yards": get_passing_yards,
     "get_movies": get_movies,
     "get_stocks": get_stocks,
+    "process_website": process_website,
 }
