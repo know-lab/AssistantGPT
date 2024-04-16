@@ -1,6 +1,7 @@
 import { Mic } from '@renderer/icons/Mic'
 import { writeFile } from 'fs'
 import { useEffect, useState } from 'react'
+import { useUser, useActiveChatId } from './ContextProvider'
 
 interface VoiceInputProps {
   setUrl: (url: string) => void
@@ -12,7 +13,8 @@ export default function VoiceInput(props: VoiceInputProps): React.ReactElement {
   )
   const [audioChunks, setAudioChunks] = useState<BlobPart[]>([])
   const [isRecording, setIsRecording] = useState(false)
-
+  const [activeChatId, setActiveChatId] = useActiveChatId()
+  const [user, setUser] = useUser()
   useEffect(() => {
     const initializeMediaRecorder = async (): Promise<void> => {
       try {
@@ -84,15 +86,26 @@ export default function VoiceInput(props: VoiceInputProps): React.ReactElement {
     mediaRecorder.stop()
   }
 
+  const sendAudio = async (): Promise<void> => {
+    const url = `http://localhost:8000/chat/0/interpret_audio`
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${user.jwt}`
+      }
+    }).then((res) => res.json())
+ 
+  }
   return (
     <>
       {isRecording ? (
-        <button className="voice-input" onClick={stopRecording}>
+        <button className="voice-input" onClick={sendAudio}>
           <Mic />
           Stop
         </button>
       ) : (
-        <button className="voice-input" onClick={startRecording}>
+        <button className="voice-input" onClick={sendAudio}>
           <Mic />
           Start
         </button>

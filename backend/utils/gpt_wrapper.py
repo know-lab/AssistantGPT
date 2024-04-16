@@ -212,6 +212,15 @@ class GPTWrapper:
         song = AudioSegment.from_file(str(speech_file_path))
         play(song)
 
+    def interpret_audio(self):
+        audio_file= open("/Users/kamka/AssistantGPT/backend/utils/speech.mp3", "rb")
+        transcription = client.audio.transcriptions.create(
+        model="whisper-1", 
+        file=audio_file
+        )
+        return transcription.text
+
+
 if __name__ == "__main__":
     gpt = GPTWrapper()
     gpt.send_message("list my files on the desktop")

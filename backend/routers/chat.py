@@ -114,3 +114,29 @@ async def read_message(chat_id: int):
         
     except RequestError:
         return {"error": "Failed to read message"}
+    
+@router.post("/{chat_id}/interpret_audio")
+async def interpret_audio(chat_id: int):
+    try:
+        message = gpt_wrapper.interpret_audio()
+        gpt_wrapper.send_message(message=message, message_type="user")
+
+        gpt_wrapper.set_chat_history(
+            (supabase.from_("Conversation").select("content").eq("id", chat_id).execute().data[0]["content"])
+        )
+        gpt_wrapper.send_message(message=message)
+        return (
+            supabase.from_("Conversation")
+            .update(
+                {
+                    "content": gpt_wrapper.get_chat_history(),
+                }
+            )
+            .eq("id", chat_id)
+            .execute()
+            .data
+        )
+    
+        
+    except RequestError:
+        return {"error": "Failed to interpret audio"}
