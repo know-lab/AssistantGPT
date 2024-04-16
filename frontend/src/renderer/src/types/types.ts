@@ -11,12 +11,19 @@ export interface ApiAction {
   title: string
   description: string
   endpoint: string
-  schema: string
   method: string
   header?: string
+  schema: string
 }
 
+
+
 export interface WorkflowListItem {
+  id: string
+  title: string
+}
+
+export interface ApiActionListItem {
   id: string
   title: string
 }

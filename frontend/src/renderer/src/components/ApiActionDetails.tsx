@@ -1,32 +1,32 @@
 import { useEffect, useState } from 'react'
-import { useUser, useActiveWorkflowId } from './ContextProvider'
+import { useUser, useActiveApiActionId } from './ContextProvider'
 import Navigation from './Navigation'
-import { Workflow } from '@renderer/types/types'
+import { ApiAction } from '@renderer/types/types'
 
 export default function ApiActionDetails(): React.ReactElement {
-  const [activeWorkflowId, setActiveWorkflowId] = useActiveWorkflowId()
+  const [activeApiId, setActiveApiActionId] = useActiveApiActionId()
   const [user, setUser] = useUser()
 
-  const [workflow, setWorkflow] = useState<Workflow | null>()
-  const [originalWorkflow, setOriginalWorkflow] = useState<Workflow | null>()
+  const [api_def, setApiDef] = useState<ApiAction | null>()
+  const [originalApiDef, setOriginalApiDef] = useState<ApiAction | null>()
   const [isEdited, setIsEdited] = useState<boolean>(false)
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
   const onPropertyChange = (property: string, value: string): void => {
-    let newWorkflow
-    if (workflow === null) {
-      newWorkflow = {
+    let newApi
+    if (api_def === null) {
+      newApi = {
         name: '',
         description: '',
         script: ''
       }
     } else {
-      newWorkflow = { ...workflow }
+      newApi = { ...api_def }
     }
-    newWorkflow[property] = value
-    console.log(newWorkflow)
-    setWorkflow(newWorkflow)
-    if (newWorkflow.name !== '' && newWorkflow.description !== '' && newWorkflow.script !== '') {
+    newApi[property] = value
+    console.log(newApi)
+    setApiDef(newApi)
+    if (newApi.name !== '' && newApi.description !== '' && newApi.script !== '') {
       setIsFormValid(true)
     } else {
       setIsFormValid(false)
@@ -37,10 +37,9 @@ export default function ApiActionDetails(): React.ReactElement {
   }
 
   useEffect(() => {
-    if (activeWorkflowId === null) return
+    if (activeApiId === null) return
     if (user === null) return
-    const url = `http://localhost:8000/apiaction/${activeWorkflowId}`
-    console
+    const url = `http://localhost:8000/apiaction/${activeApiId}`
     fetch(url, {
       method: 'GET',
       headers: {
@@ -52,31 +51,31 @@ export default function ApiActionDetails(): React.ReactElement {
       .then((response) => {
         if (response.error) {
           console.log(response.error)
-          setWorkflow(response[0])
-          setOriginalWorkflow(response[0])
-          setActiveWorkflowId(response[0].id)
+          setApiDef(response[0])
+          setOriginalApiDef(response[0])
+          setActiveApiActionId(response[0].id)
           return
         }
-        setWorkflow(response[0])
-        setOriginalWorkflow(response[0])
-        setActiveWorkflowId(response[0].id)
+        setApiDef(response[0])
+        setOriginalApiDef(response[0])
+        setActiveApiActionId(response[0].id)
       })
-  }, [activeWorkflowId])
+  }, [activeApiId])
 
   const handleSaveClick = (): void => {
-    if (workflow === null) return
+    if (api_def === null) return
     if (user === null) return
-    console.log(activeWorkflowId)
-    const url = activeWorkflowId
-      ? `http://localhost:8000/workflow/${activeWorkflowId}`
-      : 'http://localhost:8000/workflow'
+    console.log(activeApiId)
+    const url = activeApiId
+      ? `http://localhost:8000/apiaction/${activeApiId}`
+      : 'http://localhost:8000/apiaction'
     fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         authorization: `Bearer ${user.jwt}`
       },
-      body: JSON.stringify(workflow)
+      body: JSON.stringify(api_def)
     })
       .then((res) => res.json())
       .then((response) => {
@@ -84,14 +83,14 @@ export default function ApiActionDetails(): React.ReactElement {
           console.log(response.error)
           return
         }
-        setWorkflow(response[0])
-        setOriginalWorkflow(response[0])
-        setActiveWorkflowId(response[0].id)
+        setApiDef(response[0])
+        setOriginalApiDef(response[0])
+        setActiveApiActionId(response[0].id)
       })
   }
 
   const handleCancelClick = (): void => {
-    setWorkflow(originalWorkflow)
+    setApiDef(originalApiDef)
     setIsEdited(false)
   }
 
@@ -105,7 +104,7 @@ export default function ApiActionDetails(): React.ReactElement {
         <h2 className="workflow-details__content__subtitle">Title</h2>
         <input
           className="workflow-details__content__input"
-          value={workflow?.title}
+          value={api_def?.title}
           onChange={(e): void => onPropertyChange('title', e.target.value)}
           type="text"
           placeholder="API Action Name"
@@ -113,7 +112,7 @@ export default function ApiActionDetails(): React.ReactElement {
         <h2 className="workflow-details__content__subtitle">Description</h2>
         <input
           className="workflow-details__content__input"
-          value={workflow?.description}
+          value={api_def?.description}
           onChange={(e): void => onPropertyChange('description', e.target.value)}
           type="text"
           placeholder="API Action Description"
@@ -121,30 +120,30 @@ export default function ApiActionDetails(): React.ReactElement {
         <h2 className="workflow-details__content__subtitle">Endpoint</h2>
         <input
           className="workflow-details__content__input"
-          value={workflow?.description}
-          onChange={(e): void => onPropertyChange('description', e.target.value)}
+          value={api_def?.endpoint}
+          onChange={(e): void => onPropertyChange('endpoint', e.target.value)}
           type="text"
           placeholder="API Action Endpoint"
         />
         <h2 className="workflow-details__content__subtitle">Method</h2>
         <input
           className="workflow-details__content__input"
-          value={workflow?.description}
-          onChange={(e): void => onPropertyChange('description', e.target.value)}
+          value={api_def?.method}
+          onChange={(e): void => onPropertyChange('method', e.target.value)}
           type="text"
           placeholder="GET / POST / PUT / DELETE..."
         />
         <h2 className="workflow-details__content__subtitle">Header</h2>
         <textarea
           className="workflow-details__content__script"
-          value={workflow?.definition}
-          onChange={(e): void => onPropertyChange('definition', e.target.value)}
+          value={api_def?.header}
+          onChange={(e): void => onPropertyChange('header', e.target.value)}
           placeholder="API Action Header (Optional)"
         />
         <h2 className="workflow-details__content__subtitle">Schema</h2>
         <textarea
           className="workflow-details__content__script"
-          value={workflow?.definition}
+          value={api_def?.schema}
           onChange={(e): void => onPropertyChange('definition', e.target.value)}
           placeholder="API Action Schema"
         />

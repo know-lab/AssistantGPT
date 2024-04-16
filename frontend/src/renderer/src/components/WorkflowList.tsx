@@ -2,6 +2,7 @@ import { Workflow, WorkflowListItem } from '@renderer/types/types'
 import { useUser, useActiveTab, useActiveWorkflowId, useActiveApiActionId } from './ContextProvider'
 import ChatList from './ChatList'
 import { useEffect, useState } from 'react'
+import ApiActionList from './ApiActionList'
 
 export default function WorkflowList(): React.ReactElement {
   const [user, setUser] = useUser()
@@ -69,12 +70,7 @@ export default function WorkflowList(): React.ReactElement {
       >
         <h1 className="workflow-list__item__title">Create Workflow</h1>
       </button>
-      <button
-        onClick={handleNewApiActionClick}
-        className="workflow-list__item workflow-list__item--add"
-      >
-        <h1 className="workflow-list__item__title">Create API Action</h1>
-      </button>
+      <ApiActionList />
       <ChatList />
     </section>
   )
