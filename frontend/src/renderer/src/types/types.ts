@@ -13,7 +13,7 @@ export interface ApiAction {
   endpoint: string
   method: string
   header?: string
-  schema: string
+  schema_: string
 }
 
 

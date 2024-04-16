@@ -20,7 +20,7 @@ class ApiDef(BaseModel):
     endpoint: str
     method: str
     header: str | None
-    schema: str
+    schema_: str
 
 
 gpt_wrapper = GPTWrapper()
@@ -65,7 +65,7 @@ async def create_api(apidef: ApiDef):
                         "endpoint": apidef.endpoint,
                         "method": apidef.method,
                         "header": apidef.header,
-                        "schema": apidef.schema,
+                        "schema": apidef.schema_,
                         "user_id": user_id,
                     }
                 ]
@@ -89,7 +89,7 @@ async def update_api(api_id: int, apidef: ApiDef):
                     "endpoint": apidef.endpoint,
                     "method": apidef.method,
                     "header": apidef.header,
-                    "schema": apidef.schema,
+                    "schema": apidef.schema_,
                 }
             )
             .eq("id", api_id)
